@@ -1,0 +1,3662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khadija_Nd — Studio d'Administration Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="Images/k.png" type="image/x-icon" />
+
+<!-- Data Service (LocalStorage) -->
+<script src="data-service.js"></script>
+
+<style>
+  :root {
+    --bg-base: #FAF4F0;
+    --bg-surface: #FFFFFF;
+    --bg-card: rgba(255, 255, 255, 0.92);
+    --bg-sidebar: rgba(250, 244, 240, 0.96);
+    --plum-900: #201018;
+    --plum-800: #2F1723;
+    --plum-700: #421F31;
+    --rose-500: #D8536A;
+    --rose-600: #B83852;
+    --rose-100: #FBECEF;
+    --rose-50: #FFF5F7;
+    --gold-500: #C9A227;
+    --gold-400: #DFBA43;
+    --gold-100: #FBF4DE;
+    --gold-gradient: linear-gradient(135deg, #C9A227 0%, #E8CD78 50%, #B88E18 100%);
+    --rose-gradient: linear-gradient(135deg, #D8536A 0%, #A83350 100%);
+    --dark-gradient: linear-gradient(135deg, #2B1620 0%, #170910 100%);
+    --border-light: rgba(43, 22, 32, 0.08);
+    --border-gold: rgba(201, 162, 39, 0.35);
+    --shadow-sm: 0 2px 8px rgba(32, 16, 24, 0.04);
+    --shadow-md: 0 10px 30px -10px rgba(43, 22, 32, 0.08);
+    --shadow-lg: 0 20px 45px -15px rgba(43, 22, 32, 0.14);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 9999px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background: var(--bg-base);
+    color: var(--plum-900);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button, input, textarea, select { font-family: inherit; }
+
+  /* =========================================================
+     1. ÉCRAN DE CONNEXION (LOGIN GATE)
+     ========================================================= */
+  .auth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 20%, #FFF5F7 0%, #F5E5DC 50%, #ECE0D8 100%);
+    padding: 24px;
+  }
+
+  .auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 70px -15px rgba(47, 23, 35, 0.18), 0 0 0 1px rgba(201, 162, 39, 0.2);
+    padding: 44px 38px;
+    text-align: center;
+  }
+
+  .auth-badge-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    background: var(--rose-gradient);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 25px -8px rgba(216, 83, 106, 0.45);
+    border: 1.5px solid var(--gold-400);
+  }
+
+  .auth-badge-icon svg { width: 28px; height: 28px; stroke: #FFFFFF; }
+
+  .auth-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.85rem;
+    font-weight: 500;
+    color: var(--plum-900);
+    margin-bottom: 8px;
+  }
+
+  .auth-card p {
+    font-size: 0.92rem;
+    color: rgba(32, 16, 24, 0.65);
+    line-height: 1.5;
+    margin-bottom: 30px;
+  }
+
+  .auth-input-group { text-align: left; margin-bottom: 20px; }
+
+  .auth-input-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rose-600);
+    margin-bottom: 8px;
+  }
+
+  .auth-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .auth-input-wrapper input {
+    width: 100%;
+    padding: 14px 44px 14px 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--plum-900);
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .auth-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--rose-500);
+    box-shadow: 0 0 0 4px rgba(216, 83, 106, 0.12);
+  }
+
+  .auth-toggle-pwd {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(32, 16, 24, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .auth-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--rose-gradient);
+    border: 1px solid var(--gold-400);
+    border-radius: var(--radius-full);
+    color: #FFFFFF;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 12px 25px -8px rgba(184, 56, 82, 0.45);
+  }
+
+  .auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -8px rgba(184, 56, 82, 0.55);
+  }
+
+  .auth-error {
+    color: #C62828;
+    font-size: 0.84rem;
+    margin-top: 14px;
+    min-height: 1.3em;
+    font-weight: 500;
+  }
+
+  /* =========================================================
+     2. STRUCTURE DU DASHBOARD (SIDEBAR + MAIN)
+     ========================================================= */
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .admin-sidebar {
+    width: 270px;
+    background: var(--bg-sidebar);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 100;
+    padding: 28px 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 24px;
+  }
+
+  .sidebar-logo-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--rose-gradient);
+    border: 1.5px solid var(--gold-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    box-shadow: 0 6px 16px rgba(216, 83, 106, 0.35);
+  }
+
+  .sidebar-brand-text h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .sidebar-brand-text span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--rose-600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    color: rgba(32, 16, 24, 0.7);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    transition: transform 0.25s ease, stroke 0.2s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--plum-900);
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateX(4px);
+  }
+
+  .nav-item.active {
+    color: var(--plum-900);
+    background: #FFFFFF;
+    border-color: rgba(201, 162, 39, 0.35);
+    font-weight: 600;
+    box-shadow: 0 6px 18px -4px rgba(43, 22, 32, 0.09);
+    transform: translateX(4px);
+  }
+
+  .nav-item.active svg {
+    stroke: var(--rose-500);
+  }
+
+  .nav-item .nav-badge {
+    margin-left: auto;
+    background: var(--rose-500);
+    color: #FFF;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+  }
+
+  .sidebar-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-sidebar-edit-site {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #ECC880 0%, #D4AF37 50%, #AA820A 100%);
+    border: none;
+    color: #201018;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(201, 162, 39, 0.25);
+  }
+
+  .btn-sidebar-edit-site:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+    filter: brightness(1.05);
+  }
+
+  .btn-sidebar-edit-site svg {
+    stroke: #201018;
+  }
+
+  .btn-sidebar-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    background: rgba(198, 40, 40, 0.06);
+    border: 1px solid rgba(198, 40, 40, 0.2);
+    color: #C62828;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-sidebar-logout:hover {
+    background: #C62828;
+    color: #FFFFFF;
+  }
+
+  /* MAIN WRAPPER */
+  .admin-main {
+    flex: 1;
+    margin-left: 270px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .admin-topbar {
+    height: 72px;
+    padding: 0 36px;
+    background: rgba(250, 244, 240, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: var(--plum-900);
+  }
+
+  .page-title-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .status-pill.online {
+    background: rgba(46, 125, 50, 0.1);
+    color: #2E7D32;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+  }
+
+  .status-pill.offline {
+    background: rgba(230, 81, 0, 0.1);
+    color: #E65100;
+    border: 1px solid rgba(230, 81, 0, 0.3);
+  }
+
+  .btn-site-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    background: #FFFFFF;
+    border: 1px solid var(--border-gold);
+    color: var(--plum-900);
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-site-preview:hover {
+    background: var(--plum-900);
+    color: var(--gold-100);
+    transform: translateY(-1px);
+  }
+
+  /* CONTENEUR DE PAGES */
+  .admin-content {
+    padding: 36px;
+    max-width: 1320px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+  }
+
+  /* KPI STATS ROW */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 34px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease;
+  }
+
+  .stat-card:hover { transform: translateY(-3px); }
+
+  .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .stat-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(32, 16, 24, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--plum-900);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-meta { font-size: 0.78rem; color: rgba(32, 16, 24, 0.55); }
+
+  /* CARTES, FORMULAIRES & LISTES */
+  .grid-dashboard-2col {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+  }
+
+  .modern-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-md);
+    padding: 30px;
+  }
+
+  .card-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .card-header-bar h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .card-header-bar p {
+    font-size: 0.84rem;
+    color: rgba(32, 16, 24, 0.6);
+  }
+
+  .input-field { margin-bottom: 20px; }
+
+  .input-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--plum-700);
+    margin-bottom: 8px;
+  }
+
+  .input-field input, .input-field select, .input-field textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.92rem;
+    color: var(--plum-900);
+    transition: all 0.2s ease;
+  }
+
+  .input-field input:focus, .input-field select:focus, .input-field textarea:focus {
+    outline: none;
+    border-color: var(--rose-500);
+    box-shadow: 0 0 0 3px rgba(216, 83, 106, 0.12);
+  }
+
+  /* SEARCH & FILTER CONTROLS */
+  .list-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .search-input-box {
+    flex: 1;
+    min-width: 180px;
+    position: relative;
+  }
+
+  .search-input-box input {
+    width: 100%;
+    padding: 9px 14px 9px 34px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-light);
+    font-size: 0.85rem;
+    background: var(--bg-base);
+  }
+
+  .search-input-box .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: rgba(32, 16, 24, 0.4);
+  }
+
+  .filter-select {
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-light);
+    font-size: 0.82rem;
+    background: #FFFFFF;
+    color: var(--plum-900);
+    font-weight: 500;
+  }
+
+  /* DROPZONES */
+  .dropzone-box {
+    border: 2px dashed rgba(201, 162, 39, 0.4);
+    background: var(--bg-base);
+    border-radius: var(--radius-md);
+    padding: 24px 20px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+  }
+
+  .dropzone-box:hover, .dropzone-box.dragover {
+    border-color: var(--rose-500);
+    background: var(--rose-50);
+  }
+
+  .dropzone-box input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .dropzone-icon { margin-bottom: 6px; font-size: 1.6rem; }
+  .dropzone-text { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+  .dropzone-sub { font-size: 0.74rem; color: rgba(32, 16, 24, 0.5); }
+
+  .preview-box {
+    margin-top: 12px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    max-height: 180px;
+    display: none;
+    background: #000;
+  }
+
+  .preview-box img, .preview-box video {
+    width: 100%;
+    height: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .btn-action-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 13px 24px;
+    border-radius: var(--radius-full);
+    background: var(--rose-gradient);
+    border: 1px solid var(--gold-400);
+    color: #FFFFFF;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 20px -6px rgba(216, 83, 106, 0.4);
+  }
+
+  .btn-action-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -6px rgba(216, 83, 106, 0.55);
+  }
+
+  .btn-action-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    color: var(--plum-900);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-action-secondary:hover {
+    border-color: var(--gold-500);
+    color: var(--rose-600);
+  }
+
+  /* LISTE DES ÉLÉMENTS ACTIFS */
+  .items-scroll-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 560px;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
+  .item-card-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+  }
+
+  .item-card-row:hover {
+    background: #FFFFFF;
+    border-color: var(--border-gold);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .item-card-thumb {
+    width: 52px;
+    height: 64px;
+    border-radius: 10px;
+    background: #000;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .item-card-thumb img, .item-card-thumb video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-card-details { flex: 1; overflow: hidden; }
+
+  .item-card-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+
+  .item-card-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: var(--rose-100);
+    color: var(--rose-600);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .item-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .btn-icon-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background: #FFFFFF;
+    color: var(--plum-900);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    transition: all 0.2s ease;
+  }
+
+  .btn-icon-action:hover {
+    border-color: var(--gold-500);
+    color: var(--rose-600);
+    transform: translateY(-1px);
+  }
+
+  .btn-icon-delete {
+    color: #C62828;
+    border-color: rgba(198, 40, 40, 0.2);
+  }
+
+  .btn-icon-delete:hover {
+    background: #C62828;
+    color: #FFFFFF;
+    border-color: #C62828;
+  }
+
+  /* MESSAGES INBOX */
+  .status-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .status-tag.nouveau { background: #FFF3E0; color: #E65100; border: 1px solid #FFE0B2; }
+  .status-tag.en_cours { background: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
+  .status-tag.traite { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+  .status-tag.archive { background: #ECEFF1; color: #546E7A; border: 1px solid #CFD8DC; }
+
+  .message-inbox-card {
+    background: var(--bg-base);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
+  }
+
+  .message-inbox-card:hover {
+    background: #FFFFFF;
+    border-color: var(--border-gold);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .msg-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .msg-sender-name { font-size: 0.98rem; font-weight: 700; color: var(--plum-900); }
+  .msg-brand-pill {
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--gold-100);
+    color: var(--gold-500);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+
+  .msg-content-bubble {
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(32, 16, 24, 0.85);
+    margin: 12px 0;
+    white-space: pre-wrap;
+  }
+
+  /* MODALES */
+  .modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(32, 16, 24, 0.65);
+    backdrop-filter: blur(8px);
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-backdrop-custom.open { display: flex; }
+
+  .modal-window {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 540px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-gold);
+    overflow: hidden;
+    animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes modalSlide {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--plum-900);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .modal-close-btn:hover { background: rgba(0,0,0,0.06); }
+
+  .modal-body { padding: 24px; max-height: 75vh; overflow-y: auto; }
+
+  /* TOAST */
+  .toast-notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1300;
+    background: var(--plum-900);
+    color: #FAF4F0;
+    border: 1px solid var(--gold-400);
+    padding: 12px 22px;
+    border-radius: var(--radius-full);
+    font-size: 0.84rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .toast-notification.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 960px) {
+    .admin-sidebar { transform: translateX(-100%); }
+    .admin-sidebar.open { transform: translateX(0); }
+    .admin-main { margin-left: 0; }
+    .mobile-menu-toggle { display: block; }
+    .grid-dashboard-2col { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .admin-content { padding: 20px; }
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- =========================================================
+       1. ÉCRAN D'AUTHENTIFICATION
+       ========================================================= -->
+  <div id="authScreen" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-badge-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2>Studio Khadija_Nd</h2>
+      <p>Espace d'administration exclusif pour la gestion de vos contenus, partenariats et statistiques.</p>
+      
+      <form id="authForm">
+        <div class="auth-input-group">
+          <label for="adminPassword">Clé d'Accès Studio</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="adminPassword" placeholder="Entrez votre mot de passe" required autocomplete="current-password">
+            <button type="button" class="auth-toggle-pwd" id="togglePasswordBtn" title="Afficher/Masquer">
+              👁️
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="auth-submit-btn">
+          <span>Ouvrir mon Studio ✦</span>
+        </button>
+        <div id="authErrorMsg" class="auth-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       2. APPLICATION DASHBOARD
+       ========================================================= -->
+  <div id="dashboardApp" class="admin-layout" style="display:none;">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo-icon">K</div>
+        <div class="sidebar-brand-text">
+          <h2>Khadija_Nd</h2>
+          <span>Studio Privé</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="contents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          </svg>
+          <span>Vidéos & Reels</span>
+        </button>
+
+        <button class="nav-item" data-tab="gallery">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Univers & Galerie</span>
+        </button>
+
+        <button class="nav-item" data-tab="collabs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Collaborations</span>
+        </button>
+
+        <button class="nav-item" data-tab="packs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          <span>Packs & Simulateur</span>
+        </button>
+
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <span>Modifier le Site</span>
+        </button>
+
+        <button class="nav-item" data-tab="messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <span>Boîte de Réception</span>
+          <span class="nav-badge" id="sidebarMsgBadge" style="display:none;">0</span>
+        </button>
+
+        <button class="nav-item" data-tab="supabase">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+          </svg>
+          <span>Cloud & Sauvegardes</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-edit-site" id="btnSidebarEditSite" type="button" title="Modifier tous les contenus et textes du site">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <span>Modifier le Site ✦</span>
+        </button>
+        <button class="btn-sidebar-logout" id="sidebarLogoutBtn" type="button">
+          <span>Déconnexion</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ZONE PRINCIPALE -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu">☰</button>
+          <div class="page-title-badge">
+            <span>Studio</span>
+            <span style="opacity:0.4;">/</span>
+            <span id="topbarSectionName" style="color:var(--rose-600);">Vidéos & Reels</span>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="status-pill online" id="liveStatusBadge">
+            <span id="liveStatusLabel">Supabase Connecté 🟢</span>
+          </div>
+          <a href="index.html" class="btn-site-preview" target="_blank">
+            <span>Voir le site en direct ↗</span>
+          </a>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        
+        <!-- KPI METRICS SUMMARY -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-title">Vidéos Publiées</span></div>
+            <div class="stat-value" id="kpiCountVideos">0</div>
+            <div class="stat-meta">Vidéos et Reels actifs</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-title">Photos Univers</span></div>
+            <div class="stat-value" id="kpiCountGallery">0</div>
+            <div class="stat-meta">Clichés dans la galerie</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-title">Collaborations</span></div>
+            <div class="stat-value" id="kpiCountCollabs">0</div>
+            <div class="stat-meta">Marques partenaires</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-title">Demandes Reçues</span></div>
+            <div class="stat-value" id="kpiCountMessages">0</div>
+            <div class="stat-meta">Opportunités dans l'inbox</div>
+          </div>
+        </div>
+
+        <!-- =========================================================
+             SECTION 1 : VIDÉOS & REELS
+             ========================================================= -->
+        <section id="section-contents" class="admin-section-pane">
+          <div class="grid-dashboard-2col">
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Publier une Vidéo</h3>
+                  <p>Hébergement direct de fichier ou lien externe avec catégorie.</p>
+                </div>
+              </div>
+
+              <form id="formUploadContent">
+                <div class="input-field">
+                  <label for="videoCaptionInput">Légende / Titre du contenu *</label>
+                  <input type="text" id="videoCaptionInput" placeholder="ex : @khadija_nd — Lookbook Automne Paris" required>
+                </div>
+
+                <div class="input-field">
+                  <label for="videoCategorySelect">Catégorie du format</label>
+                  <select id="videoCategorySelect">
+                    <option value="reels">✦ Reels Viraux (Instagram / TikTok)</option>
+                    <option value="ugc">✦ UGC Marques & Ads</option>
+                    <option value="vlogs">✦ Vlogs & Lifestyle</option>
+                  </select>
+                </div>
+
+                <div class="input-field">
+                  <label for="videoLinkTypeSelect">Type de lien</label>
+                  <select id="videoLinkTypeSelect">
+                    <option value="video">✦ Vidéo directe (MP4, WebM)</option>
+                    <option value="tiktok">✦ Lien TikTok</option>
+                    <option value="youtube">✦ Lien YouTube</option>
+                  </select>
+                </div>
+
+                <div class="input-field">
+                  <label>Fichier Vidéo (MP4, WebM)</label>
+                  <div class="dropzone-box" id="videoDropzone">
+                    <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*">
+                    <div class="dropzone-icon">🎬</div>
+                    <div class="dropzone-text" id="videoDropzoneLabel">Glissez une vidéo ici ou cliquez pour choisir</div>
+                    <div class="dropzone-sub">Stockage sécurisé sur Supabase Media</div>
+                  </div>
+                  <div class="preview-box" id="videoPreviewWrapper">
+                    <video id="videoLocalPreview" controls muted></video>
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="videoUrlInput">Lien Vidéo / TikTok / YouTube</label>
+                  <input type="text" id="videoUrlInput" placeholder="https://www.tiktok.com/@... ou https://www.youtube.com/watch?v=...">
+                </div>
+
+                <button type="submit" class="btn-action-primary" id="btnUploadContent">
+                  <span>Publier la vidéo ✦</span>
+                </button>
+              </form>
+            </div>
+
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Vidéos Actives (<span id="countContentsList">0</span>)</h3>
+                  <p>Gérez les formats affichés en page d'accueil.</p>
+                </div>
+              </div>
+
+              <div class="list-toolbar">
+                <div class="search-input-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="searchContentsInput" placeholder="Rechercher une vidéo...">
+                </div>
+                <select id="filterContentsCategory" class="filter-select">
+                  <option value="all">Toutes les catégories</option>
+                  <option value="reels">Reels Viraux</option>
+                  <option value="ugc">UGC Marques</option>
+                  <option value="vlogs">Vlogs & Lifestyle</option>
+                </select>
+              </div>
+
+              <div class="items-scroll-list" id="contentsListContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 2 : UNIVERS (GALERIE PHOTOS)
+             ========================================================= -->
+        <section id="section-gallery" class="admin-section-pane" style="display:none;">
+          <div class="grid-dashboard-2col">
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Ajouter une Photo HD</h3>
+                  <p>Intégrez une photo artistique dans la galerie univers.</p>
+                </div>
+              </div>
+
+              <form id="formUploadGallery">
+                <div class="input-field">
+                  <label for="galleryCaptionInput">Légende du Visuel</label>
+                  <input type="text" id="galleryCaptionInput" placeholder="ex : Éditorial Fashion, Shooting Paris 2026...">
+                </div>
+
+                <div class="input-field">
+                  <label for="galleryCategorySelect">Catégorie Univers</label>
+                  <select id="galleryCategorySelect">
+                    <option value="mode">✦ Mode & Lookbook</option>
+                    <option value="beaute">✦ Beauté & Glow</option>
+                    <option value="lifestyle">✦ Lifestyle</option>
+                    <option value="evenement">✦ Événements</option>
+                  </select>
+                </div>
+
+                <div class="input-field">
+                  <label>Photo (JPEG, PNG, WebP)</label>
+                  <div class="dropzone-box" id="galleryDropzone">
+                    <input type="file" id="galleryFileInput" accept="image/*">
+                    <div class="dropzone-icon">🖼️</div>
+                    <div class="dropzone-text" id="galleryDropzoneLabel">Glissez une photo ici ou cliquez pour choisir</div>
+                    <div class="dropzone-sub">Haute définition recommandée</div>
+                  </div>
+                  <div class="preview-box" id="galleryPreviewWrapper">
+                    <img id="galleryLocalPreview" alt="Aperçu Photo">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="galleryUrlInput">Ou Lien Image Direct (URL Externe)</label>
+                  <input type="text" id="galleryUrlInput" placeholder="https://images.unsplash.com/... ou Images/photo2.jpeg">
+                </div>
+
+                <button type="submit" class="btn-action-primary" id="btnUploadGallery">
+                  <span>Ajouter à l'univers ✦</span>
+                </button>
+              </form>
+            </div>
+
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Photos dans l'Univers (<span id="countGalleryList">0</span>)</h3>
+                  <p>Clichés visibles dans la grille interactive.</p>
+                </div>
+              </div>
+
+              <div class="list-toolbar">
+                <div class="search-input-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="searchGalleryInput" placeholder="Rechercher un visuel...">
+                </div>
+                <select id="filterGalleryCategory" class="filter-select">
+                  <option value="all">Toutes les catégories</option>
+                  <option value="mode">Mode</option>
+                  <option value="beaute">Beauté</option>
+                  <option value="lifestyle">Lifestyle</option>
+                  <option value="evenement">Événements</option>
+                </select>
+              </div>
+
+              <div class="items-scroll-list" id="galleryListContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 3 : COLLABORATIONS DE MARQUE
+             ========================================================= -->
+        <section id="section-collabs" class="admin-section-pane" style="display:none;">
+          <div class="grid-dashboard-2col">
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Nouvelle Collaboration</h3>
+                  <p>Ajoutez une marque partenaire au bandeau de défilement.</p>
+                </div>
+              </div>
+
+              <form id="formUploadCollab">
+                <div class="input-field">
+                  <label for="collabNameInput">Nom de la Marque *</label>
+                  <input type="text" id="collabNameInput" placeholder="ex : Dior Beauty, L'Oréal, Zara..." required>
+                </div>
+
+                <div class="input-field">
+                  <label>Logo de la Marque (Fichier Image)</label>
+                  <div class="dropzone-box" id="collabDropzone">
+                    <input type="file" id="collabFileInput" accept="image/*">
+                    <div class="dropzone-icon">🤝</div>
+                    <div class="dropzone-text" id="collabDropzoneLabel">Glissez le logo ou cliquez pour parcourir</div>
+                    <div class="dropzone-sub">PNG transparent recommandé</div>
+                  </div>
+                  <div class="preview-box" id="collabPreviewWrapper">
+                    <img id="collabLocalPreview" alt="Aperçu Logo">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="collabLogoUrlInput">Ou Lien Logo Direct (URL)</label>
+                  <input type="text" id="collabLogoUrlInput" placeholder="https://...">
+                </div>
+
+                <button type="submit" class="btn-action-primary" id="btnUploadCollab">
+                  <span>Enregistrer la collaboration ✦</span>
+                </button>
+              </form>
+            </div>
+
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Partenariats Actifs (<span id="countCollabsList">0</span>)</h3>
+                  <p>Marques visibles dans le flux infini.</p>
+                </div>
+              </div>
+
+              <div class="list-toolbar">
+                <div class="search-input-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="searchCollabsInput" placeholder="Rechercher une marque...">
+                </div>
+              </div>
+
+              <div class="items-scroll-list" id="collabsListContainer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 4 : PACKS DE COLLABORATION & SIMULATEUR
+             ========================================================= -->
+        <section id="section-packs" class="admin-section-pane" style="display:none;">
+          <div class="grid-dashboard-2col">
+            
+            <!-- COLONNE GAUCHE : AJOUT / CRÉATION DE FORMULE -->
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Créer une Formule / Pack</h3>
+                  <p>Ajoutez une nouvelle offre clé en main affichée sur votre page d'accueil.</p>
+                </div>
+              </div>
+
+              <form id="formAddPack">
+                <div class="input-field">
+                  <label for="packTitleInput">Titre du Pack *</label>
+                  <input type="text" id="packTitleInput" placeholder="ex : Pack Éclat, Pack Beauté & Look..." required>
+                </div>
+
+                <div class="input-field">
+                  <label for="packTaglineInput">Slogan / Description courte *</label>
+                  <input type="text" id="packTaglineInput" placeholder="ex : Idéal pour un lancement produit ou une visibilité ciblée..." required>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                  <div class="input-field">
+                    <label for="packReelsCount">Reels inclus</label>
+                    <input type="number" id="packReelsCount" min="0" max="20" value="1" required>
+                  </div>
+                  <div class="input-field">
+                    <label for="packStoriesCount">Stories incluses</label>
+                    <input type="number" id="packStoriesCount" min="0" max="30" value="2" required>
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                  <div class="input-field">
+                    <label for="packUgcCount">Contenus UGC inclus</label>
+                    <input type="number" id="packUgcCount" min="0" max="15" value="0" required>
+                  </div>
+                  <div class="input-field">
+                    <label for="packAdsSelect">Droits Publicitaires Ads</label>
+                    <select id="packAdsSelect">
+                      <option value="0">Non inclus</option>
+                      <option value="1">Inclus (30 jours)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; text-transform:none; letter-spacing:normal;">
+                    <input type="checkbox" id="packPopularCheckbox">
+                    <span>Mettre en vedette (« Le Plus Demandé »)</span>
+                  </label>
+                </div>
+
+                <div class="input-field" id="packPopularBadgeGroup" style="display:none;">
+                  <label for="packPopularBadgeInput">Texte du Badge Vedette</label>
+                  <input type="text" id="packPopularBadgeInput" placeholder="★ Le Plus Demandé" value="★ Le Plus Demandé">
+                </div>
+
+                <div class="input-field">
+                  <label for="packFeaturesInput">Avantages / Inclusions (1 ligne = 1 puce) *</label>
+                  <textarea id="packFeaturesInput" rows="4" placeholder="1 Reel Scénarisé (Instagram + TikTok)&#10;2 Stories avec lien swipe-up / sticker&#10;Rapport d'audience et de métriques&#10;Livraison sous 5 à 7 jours ouvrés" required></textarea>
+                </div>
+
+                <div class="input-field">
+                  <label for="packBtnTextInput">Texte du Bouton d'action</label>
+                  <input type="text" id="packBtnTextInput" placeholder="ex : Sélectionner Pack Éclat ✦">
+                </div>
+
+                <button id="btnAddPackBtn" class="btn-action-primary" type="submit">
+                  <span>Enregistrer la Formule ✦</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- COLONNE DROITE : LISTE DES PACKS & PARAMÈTRES SIMULATEUR -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+              
+              <!-- LISTE DES PACKS ACTIFS -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3>Packs Actifs (<span id="countPacksList">0</span>)</h3>
+                    <p>Formules visibles dans la section Services & Tarifs.</p>
+                  </div>
+                </div>
+
+                <div class="items-scroll-list" id="packsListContainer"></div>
+              </div>
+
+              <!-- PARAMÈTRES DU SIMULATEUR DE CAMPAGNE -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3>⚙️ Paramètres du Simulateur</h3>
+                    <p>Personnalisez les calculs d'impact et les curseurs de la page d'accueil.</p>
+                  </div>
+                </div>
+
+                <form id="formSimulatorConfig">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="input-field">
+                      <label for="simReachReel">Vues estimées par Reel</label>
+                      <input type="number" id="simReachReel" placeholder="75000" required>
+                    </div>
+                    <div class="input-field">
+                      <label for="simReachStory">Vues estimées par Story</label>
+                      <input type="number" id="simReachStory" placeholder="20000" required>
+                    </div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="input-field">
+                      <label for="simReachUgc">Vues estimées par UGC</label>
+                      <input type="number" id="simReachUgc" placeholder="40000" required>
+                    </div>
+                    <div class="input-field">
+                      <label for="simAdsMultiplier">Multiplicateur Droits Ads</label>
+                      <input type="number" id="simAdsMultiplier" step="0.1" placeholder="1.5" required>
+                    </div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+                    <div class="input-field">
+                      <label for="simMaxReels">Curseur Max Reels</label>
+                      <input type="number" id="simMaxReels" min="1" max="20" placeholder="4" required>
+                    </div>
+                    <div class="input-field">
+                      <label for="simMaxStories">Curseur Max Stories</label>
+                      <input type="number" id="simMaxStories" min="1" max="30" placeholder="6" required>
+                    </div>
+                    <div class="input-field">
+                      <label for="simMaxUgc">Curseur Max UGC</label>
+                      <input type="number" id="simMaxUgc" min="1" max="15" placeholder="3" required>
+                    </div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="input-field">
+                      <label for="simEngagementText">Taux d'engagement affiché</label>
+                      <input type="text" id="simEngagementText" placeholder="98% - 100%">
+                    </div>
+                    <div class="input-field">
+                      <label for="simDelayText">Délai moyen affiché</label>
+                      <input type="text" id="simDelayText" placeholder="5 à 7 Jours">
+                    </div>
+                  </div>
+
+                  <div class="input-field">
+                    <label for="simBaseMin">Portée minimale de base (vues)</label>
+                    <input type="number" id="simBaseMin" placeholder="15000">
+                  </div>
+
+                  <button type="submit" class="btn-action-primary" style="width:auto; padding:11px 26px;">
+                    <span>💾 Enregistrer les Réglages Simulateur ✦</span>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 5 : ÉDITEUR COMPLET DU SITE WEB
+             ========================================================= -->
+        <section id="section-settings" class="admin-section-pane" style="display:none;">
+          <form id="formSiteSettings">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:14px;">
+              <div>
+                <h2 style="font-size:1.4rem; font-weight:700; color:var(--plum-900);">Éditeur Complet du Site Web ✦</h2>
+                <p style="color:rgba(32,16,24,0.65); font-size:0.88rem;">Modifiez instantanément tous les textes, rôles, sections, chiffres clés et FAQ du site public.</p>
+              </div>
+              <button type="submit" class="btn-action-primary" id="btnSaveAllSiteSettings" style="width:auto; padding:12px 28px;">
+                <span>✦ Enregistrer les Modifications</span>
+              </button>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:24px;">
+
+              <!-- BLOC 1 : HERO & IDENTITÉ VISUELLE -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">🌟 1. En-tête & Hero Section</h3>
+                    <p>Le message d'accueil et les titres principaux visibles au sommet de la page.</p>
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingHeroGreeting">Salutation d'accueil</label>
+                    <input type="text" id="settingHeroGreeting" placeholder="Bonjour">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingHeroName">Nom / Titre Principal</label>
+                    <input type="text" id="settingHeroName" placeholder="Khadija_Nd">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="settingAvailability">Bandeau de disponibilité (Status Pill & Footer)</label>
+                  <input type="text" id="settingAvailability" placeholder="Ouverte aux collaborations 2026">
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;">
+                  <div class="input-field">
+                    <label for="settingHeroRole1">Rôle 1</label>
+                    <input type="text" id="settingHeroRole1" placeholder="Créatrice de contenu">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingHeroRole2">Rôle 2</label>
+                    <input type="text" id="settingHeroRole2" placeholder="Influenceuse">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingHeroRole3">Rôle 3</label>
+                    <input type="text" id="settingHeroRole3" placeholder="Model photo">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingHeroRole4">Rôle 4</label>
+                    <input type="text" id="settingHeroRole4" placeholder="Maquilleuse">
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingHeroBtn1">Bouton Action 1 (Hero)</label>
+                    <input type="text" id="settingHeroBtn1" placeholder="Simuler un partenariat ✦">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingHeroBtn2">Bouton Action 2 (Hero)</label>
+                    <input type="text" id="settingHeroBtn2" placeholder="Voir les vidéos">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOC 2 : SECTION À PROPOS -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">📖 2. Section À Propos & Histoire</h3>
+                    <p>Votre biographie et vos points forts présentés aux marques.</p>
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="settingAboutTitle">Titre de présentation</label>
+                  <input type="text" id="settingAboutTitle" placeholder="Khadija_Nd">
+                </div>
+
+                <div class="input-field">
+                  <label for="settingAboutP1">Paragraphe d'introduction 1</label>
+                  <textarea id="settingAboutP1" rows="2" placeholder="Je suis créatrice de contenu et influenceuse..."></textarea>
+                </div>
+
+                <div class="input-field">
+                  <label for="settingAboutP2">Paragraphe d'introduction 2</label>
+                  <textarea id="settingAboutP2" rows="2" placeholder="J'accompagne les marques dans leur présence en ligne..."></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                  <div class="input-field">
+                    <label for="settingAboutH1">Point fort 1</label>
+                    <input type="text" id="settingAboutH1" placeholder="Formats courts ultra-viraux (Reels, TikTok) et séries longues">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingAboutH2">Point fort 2</label>
+                    <input type="text" id="settingAboutH2" placeholder="Collaborations multi-secteurs : mode, beauté, lifestyle">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingAboutH3">Point fort 3</label>
+                    <input type="text" id="settingAboutH3" placeholder="Communauté fidèle et réactive sur plusieurs plateformes">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingAboutH4">Point fort 4</label>
+                    <input type="text" id="settingAboutH4" placeholder="Direction créative complète : du brief au rendu final HD">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOC 3 : SERVICES & PRESTATIONS -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">💄 3. Services & Prestations</h3>
+                    <p>Détail des 5 expertises proposées aux marques et agences.</p>
+                  </div>
+                </div>
+
+                <!-- Service 01 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <h4 style="font-size:0.95rem; margin-bottom:10px; color:var(--rose-600);">✦ Service 01 — Création de Contenu</h4>
+                  <div class="input-field">
+                    <label for="settingSrv1Title">Titre Service 01</label>
+                    <input type="text" id="settingSrv1Title" placeholder="Création de contenu & Reels">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv1Desc">Description Service 01</label>
+                    <textarea id="settingSrv1Desc" rows="2" placeholder="Vidéos, photos et stories pensées pour capter l'attention dès les 3 premières secondes..."></textarea>
+                  </div>
+                </div>
+
+                <!-- Service 02 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <h4 style="font-size:0.95rem; margin-bottom:10px; color:var(--rose-600);">✦ Service 02 — Partenariats de Marque</h4>
+                  <div class="input-field">
+                    <label for="settingSrv2Title">Titre Service 02</label>
+                    <input type="text" id="settingSrv2Title" placeholder="Partenariats de marque">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv2Desc">Description Service 02</label>
+                    <textarea id="settingSrv2Desc" rows="2" placeholder="Placements produits natifs, sponsorisations et co-créations..."></textarea>
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv2Price">Note tarifaire Service 02</label>
+                    <input type="text" id="settingSrv2Price" placeholder="✦ Tarifs sur mesure selon format et droits d'usage">
+                  </div>
+                </div>
+
+                <!-- Service 03 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <h4 style="font-size:0.95rem; margin-bottom:10px; color:var(--rose-600);">✦ Service 03 — UGC Ads</h4>
+                  <div class="input-field">
+                    <label for="settingSrv3Title">Titre Service 03</label>
+                    <input type="text" id="settingSrv3Title" placeholder="UGC pour marques (Ads)">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv3Desc">Description Service 03</label>
+                    <textarea id="settingSrv3Desc" rows="2" placeholder="Contenus bruts ou montés prêts pour vos campagnes Meta / TikTok Ads..."></textarea>
+                  </div>
+                </div>
+
+                <!-- Service 04 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <h4 style="font-size:0.95rem; margin-bottom:10px; color:var(--rose-600);">✦ Service 04 — Égérie & Shooting</h4>
+                  <div class="input-field">
+                    <label for="settingSrv4Title">Titre Service 04</label>
+                    <input type="text" id="settingSrv4Title" placeholder="Égérie & Shooting photo">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv4Desc">Description Service 04</label>
+                    <textarea id="settingSrv4Desc" rows="2" placeholder="Model photo pour lookbooks, campagnes digitales et lancements de collections..."></textarea>
+                  </div>
+                </div>
+
+                <!-- Service 05 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+                  <h4 style="font-size:0.95rem; margin-bottom:10px; color:var(--rose-600);">✦ Service 05 — Maquillage & Beauty Looks</h4>
+                  <div class="input-field">
+                    <label for="settingSrv5Title">Titre Service 05</label>
+                    <input type="text" id="settingSrv5Title" placeholder="Maquillage Professionnel & Beauty Looks">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv5Desc">Description Service 05</label>
+                    <textarea id="settingSrv5Desc" rows="2" placeholder="Prestations Make-Up artist d'exception pour shootings éditoriaux, défilés, tournages clips/vidéos..."></textarea>
+                  </div>
+                  <div class="input-field">
+                    <label for="settingSrv5Price">Note tarifaire Service 05</label>
+                    <input type="text" id="settingSrv5Price" placeholder="✦ Sur devis & selon format d'événement">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOC 4 : STATISTIQUES & AUDIENCE -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">📊 4. Chiffres Clés & Audience (KPIs)</h3>
+                    <p>Statistiques affichées dans la bannière hero et le media kit.</p>
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingIgFollowers">Abonnés Instagram (Texte affiché)</label>
+                    <input type="text" id="settingIgFollowers" placeholder="68K+">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingIgNumber">Abonnés Instagram (Chiffre compteur)</label>
+                    <input type="number" id="settingIgNumber" placeholder="68">
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingTiktokFollowers">Abonnés TikTok (Texte affiché)</label>
+                    <input type="text" id="settingTiktokFollowers" placeholder="105K+">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingTiktokNumber">Abonnés TikTok (Chiffre compteur)</label>
+                    <input type="number" id="settingTiktokNumber" placeholder="105">
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingEngagement">Taux d'engagement</label>
+                    <input type="text" id="settingEngagement" placeholder="100%">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingCampaigns">Campagnes Réussies</label>
+                    <input type="text" id="settingCampaigns" placeholder="12+">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOC 5 : QUESTIONS FRÉQUENTES (FAQ) -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">❓ 5. Questions Fréquentes (FAQ)</h3>
+                    <p>Les réponses aux questions récurrentes posées par les marques.</p>
+                  </div>
+                </div>
+
+                <!-- FAQ 1 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <div class="input-field">
+                    <label for="settingFaqQ1">Question 1</label>
+                    <input type="text" id="settingFaqQ1" placeholder="Quels sont tes délais habituels de livraison ?">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingFaqA1">Réponse 1</label>
+                    <textarea id="settingFaqA1" rows="2" placeholder="En général entre 5 et 10 jours ouvrés..."></textarea>
+                  </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); margin-bottom:14px;">
+                  <div class="input-field">
+                    <label for="settingFaqQ2">Question 2</label>
+                    <input type="text" id="settingFaqQ2" placeholder="Proposes-tu des droits d'utilisation pour des publicités (Ads) ?">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingFaqA2">Réponse 2</label>
+                    <textarea id="settingFaqA2" rows="2" placeholder="Oui, des cessions de droits sont disponibles..."></textarea>
+                  </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div style="background:rgba(255,255,255,0.6); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+                  <div class="input-field">
+                    <label for="settingFaqQ3">Question 3</label>
+                    <input type="text" id="settingFaqQ3" placeholder="Comment s'articule la facturation et le contrat ?">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingFaqA3">Réponse 3</label>
+                    <textarea id="settingFaqA3" rows="2" placeholder="Émission d'un devis et contrat clair, acompte de 50%..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOC 6 : COORDONNÉES, RÉSEAUX & PIED DE PAGE -->
+              <div class="modern-card">
+                <div class="card-header-bar">
+                  <div>
+                    <h3 style="display:flex; align-items:center; gap:8px;">💌 6. Contact, Réseaux & Pied de Page</h3>
+                    <p>Liens de redirection et coordonnées professionnelles.</p>
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingEmail">Email professionnel</label>
+                    <input type="email" id="settingEmail" placeholder="contact@khadija-nd.com">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingPhone">Téléphone / WhatsApp (Optionnel)</label>
+                    <input type="text" id="settingPhone" placeholder="+33 ... / +221 ...">
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div class="input-field">
+                    <label for="settingIgHandle">Handle Instagram</label>
+                    <input type="text" id="settingIgHandle" placeholder="@khadija_nd">
+                  </div>
+                  <div class="input-field">
+                    <label for="settingTiktokHandle">Handle TikTok</label>
+                    <input type="text" id="settingTiktokHandle" placeholder="@khadija_nd">
+                  </div>
+                </div>
+
+                <div class="input-field">
+                  <label for="settingCreatorBio">Biographie Pied de Page (Footer)</label>
+                  <textarea id="settingCreatorBio" rows="2" placeholder="Créatrice de contenu, influenceuse et model photo. Donner vie à des récits visuels captivants et authentiques."></textarea>
+                </div>
+              </div>
+
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="submit" class="btn-action-primary" style="width:auto; padding:14px 36px; font-size:0.95rem;">
+                <span>✦ Enregistrer toutes les modifications du site</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- =========================================================
+             SECTION 5 : BOÎTE DE RÉCEPTION (INBOX)
+             ========================================================= -->
+        <section id="section-messages" class="admin-section-pane" style="display:none;">
+          <div class="modern-card">
+            <div class="card-header-bar">
+              <div>
+                <h3>Boîte de Réception Partenariats (<span id="countMessagesList">0</span>)</h3>
+                <p>Messages envoyés directement par les marques et agences via votre site web.</p>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button id="btnExportMessages" class="btn-action-secondary" type="button">
+                  <span>📥 Exporter CSV</span>
+                </button>
+                <button id="btnRefreshMessages" class="btn-action-secondary" type="button">
+                  <span>🔄 Actualiser</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="list-toolbar">
+              <div class="search-input-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchMessagesInput" placeholder="Rechercher par marque, nom, email ou mot-clé...">
+              </div>
+              <select id="filterMessageStatus" class="filter-select">
+                <option value="all">Tous les statuts</option>
+                <option value="nouveau">🟡 Nouveaux</option>
+                <option value="en_cours">🔵 En cours</option>
+                <option value="traite">🟢 Traités / Répondus</option>
+                <option value="archive">⚪ Archivés</option>
+              </select>
+            </div>
+
+            <div id="messagesInboxContainer"></div>
+          </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 6 : CLOUD, SAUVEGARDES & SÉCURITÉ
+             ========================================================= -->
+        <section id="section-supabase" class="admin-section-pane" style="display:none;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:28px;">
+            
+            <!-- CONFIGURATION SUPABASE -->
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Connexion Cloud Supabase</h3>
+                  <p>Synchronisation PostgreSQL et Bucket Media.</p>
+                </div>
+              </div>
+
+              <div class="input-field">
+                <label for="cfgProjectUrl">URL du Projet Supabase</label>
+                <input type="text" id="cfgProjectUrl" placeholder="https://fpxhhbkelcoeqyxcigoj.supabase.co">
+              </div>
+
+              <div class="input-field">
+                <label for="cfgAnonKey">Clé Publique Anon (Project API Key)</label>
+                <input type="text" id="cfgAnonKey" placeholder="sb_publishable_... ou eyJhbGciOi...">
+              </div>
+
+              <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+                <button id="btnSaveConfig" class="btn-action-primary" type="button" style="width:auto; padding:11px 24px;">
+                  <span>💾 Enregistrer Cloud</span>
+                </button>
+                <button id="btnTestConfig" class="btn-action-secondary" type="button">
+                  <span>🔍 Lancer le diagnostic</span>
+                </button>
+              </div>
+
+              <div id="diagnosticResultsBox" style="margin-top:20px; display:none; background:var(--bg-base); border-radius:var(--radius-md); padding:16px; border:1px solid var(--border-light);">
+                <h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--plum-900);">Résultats du Diagnostic</h4>
+                <div id="diagnosticItemsList" style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem; line-height:1.4;"></div>
+              </div>
+
+              <div style="margin-top:20px; padding:16px; background:rgba(201,162,39,0.06); border-radius:var(--radius-md); border:1px solid var(--border-gold);">
+                <p style="font-size:0.8rem; line-height:1.5; color:rgba(32,16,24,0.8); margin-bottom:8px;">
+                  Pour réinitialiser les tables et le stockage :
+                </p>
+                <button id="btnCopySqlSchema" class="btn-action-secondary" type="button" style="font-size:0.78rem;">
+                  <span>📋 Copier le script SQL d'initialisation</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- SÉCURITÉ & SAUVEGARDES GLOBALES -->
+            <div class="modern-card">
+              <div class="card-header-bar">
+                <div>
+                  <h3>Sécurité & Sauvegardes Studio</h3>
+                  <p>Protection par mot de passe et export complet des données.</p>
+                </div>
+              </div>
+
+              <!-- CHANGEMENT DE MOT DE PASSE -->
+              <form id="formChangePassword" style="margin-bottom:28px;">
+                <h4 style="font-size:0.95rem; margin-bottom:12px;">Modifier la Clé d'Accès Studio</h4>
+                <div class="input-field">
+                  <label for="oldPasswordInput">Mot de passe actuel</label>
+                  <input type="password" id="oldPasswordInput" placeholder="Entrez le mot de passe actuel" required>
+                </div>
+                <div class="input-field">
+                  <label for="newPasswordInput">Nouveau mot de passe</label>
+                  <input type="password" id="newPasswordInput" placeholder="Au moins 4 caractères" required>
+                </div>
+                <button type="submit" class="btn-action-secondary">
+                  <span>🔒 Mettre à jour le mot de passe</span>
+                </button>
+              </form>
+
+              <hr style="border:none; border-top:1px solid var(--border-light); margin:24px 0;">
+
+              <!-- SAUVEGARDE & RESTAURATION JSON -->
+              <div>
+                <h4 style="font-size:0.95rem; margin-bottom:8px;">Sauvegarde & Restauration Intégrale</h4>
+                <p style="font-size:0.82rem; color:rgba(32,16,24,0.65); margin-bottom:14px;">
+                  Téléchargez une copie complète (vidéos, photos, marques, réglages et messages) en format JSON pour ne jamais perdre vos données.
+                </p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button id="btnExportFullBackup" class="btn-action-secondary" type="button">
+                    <span>📦 Exporter Sauvegarde JSON</span>
+                  </button>
+                  <label class="btn-action-secondary" style="margin:0; cursor:pointer;">
+                    <span>📂 Restaurer un fichier JSON</span>
+                    <input type="file" id="fileRestoreBackup" accept=".json" style="display:none;">
+                  </label>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODALES D'ÉDITION & APERÇU
+       ========================================================= -->
+
+  <!-- 1. MODAL MODIFIER VIDÉO -->
+  <div id="modalEditContent" class="modal-backdrop-custom">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Modifier la Vidéo</h3>
+        <button class="modal-close-btn" data-close-modal="modalEditContent">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditContent">
+          <input type="hidden" id="editContentId">
+          <div class="input-field">
+            <label for="editContentCaption">Légende / Titre</label>
+            <input type="text" id="editContentCaption" required>
+          </div>
+          <div class="input-field">
+            <label for="editContentCategory">Catégorie</label>
+            <select id="editContentCategory">
+              <option value="reels">✦ Reels Viraux (Instagram / TikTok)</option>
+              <option value="ugc">✦ UGC Marques & Ads</option>
+              <option value="vlogs">✦ Vlogs & Lifestyle</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="editContentVideoUrl">Lien Vidéo (URL)</label>
+            <input type="text" id="editContentVideoUrl">
+          </div>
+          <button type="submit" class="btn-action-primary">
+            <span>Enregistrer les modifications ✦</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL MODIFIER PHOTO GALERIE -->
+  <div id="modalEditGallery" class="modal-backdrop-custom">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Modifier la Photo Univers</h3>
+        <button class="modal-close-btn" data-close-modal="modalEditGallery">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditGallery">
+          <input type="hidden" id="editGalleryId">
+          <div class="input-field">
+            <label for="editGalleryCaption">Légende du Visuel</label>
+            <input type="text" id="editGalleryCaption">
+          </div>
+          <div class="input-field">
+            <label for="editGalleryCategory">Catégorie</label>
+            <select id="editGalleryCategory">
+              <option value="mode">✦ Mode & Lookbook</option>
+              <option value="beaute">✦ Beauté & Glow</option>
+              <option value="lifestyle">✦ Lifestyle</option>
+              <option value="evenement">✦ Événements</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label for="editGalleryImageUrl">Lien Image (URL)</label>
+            <input type="text" id="editGalleryImageUrl">
+          </div>
+          <button type="submit" class="btn-action-primary">
+            <span>Enregistrer les modifications ✦</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MODAL MODIFIER COLLABORATION -->
+  <div id="modalEditCollab" class="modal-backdrop-custom">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Modifier la Collaboration</h3>
+        <button class="modal-close-btn" data-close-modal="modalEditCollab">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditCollab">
+          <input type="hidden" id="editCollabId">
+          <div class="input-field">
+            <label for="editCollabName">Nom de la Marque</label>
+            <input type="text" id="editCollabName" required>
+          </div>
+          <div class="input-field">
+            <label for="editCollabLogoUrl">Lien Logo (URL)</label>
+            <input type="text" id="editCollabLogoUrl">
+          </div>
+          <button type="submit" class="btn-action-primary">
+            <span>Enregistrer les modifications ✦</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAL MODIFIER FORMULE / PACK -->
+  <div id="modalEditPack" class="modal-backdrop-custom">
+    <div class="modal-window" style="max-width:580px;">
+      <div class="modal-header">
+        <h3>Modifier la Formule / Pack</h3>
+        <button class="modal-close-btn" data-close-modal="modalEditPack">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditPack">
+          <input type="hidden" id="editPackId">
+          <div class="input-field">
+            <label for="editPackTitle">Titre du Pack *</label>
+            <input type="text" id="editPackTitle" required>
+          </div>
+          <div class="input-field">
+            <label for="editPackTagline">Slogan / Description *</label>
+            <input type="text" id="editPackTagline" required>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="input-field">
+              <label for="editPackReels">Reels inclus</label>
+              <input type="number" id="editPackReels" min="0" max="20" required>
+            </div>
+            <div class="input-field">
+              <label for="editPackStories">Stories incluses</label>
+              <input type="number" id="editPackStories" min="0" max="30" required>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="input-field">
+              <label for="editPackUgc">Contenus UGC inclus</label>
+              <input type="number" id="editPackUgc" min="0" max="15" required>
+            </div>
+            <div class="input-field">
+              <label for="editPackAds">Droits Publicitaires Ads</label>
+              <select id="editPackAds">
+                <option value="0">Non inclus</option>
+                <option value="1">Inclus (30 jours)</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-field">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; text-transform:none; letter-spacing:normal;">
+              <input type="checkbox" id="editPackPopular">
+              <span>Mettre en vedette (« Le Plus Demandé »)</span>
+            </label>
+          </div>
+          <div class="input-field" id="editPackPopularBadgeGroup" style="display:none;">
+            <label for="editPackPopularBadge">Texte du Badge</label>
+            <input type="text" id="editPackPopularBadge" placeholder="★ Le Plus Demandé">
+          </div>
+          <div class="input-field">
+            <label for="editPackFeatures">Avantages / Inclusions (1 ligne = 1 puce) *</label>
+            <textarea id="editPackFeatures" rows="5" required></textarea>
+          </div>
+          <div class="input-field">
+            <label for="editPackBtnText">Texte du bouton</label>
+            <input type="text" id="editPackBtnText">
+          </div>
+          <button type="submit" class="btn-action-primary">
+            <span>Enregistrer les modifications ✦</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MODAL RÉPONSE RAPIDE INBOX -->
+  <div id="modalQuickReply" class="modal-backdrop-custom">
+    <div class="modal-window" style="max-width:580px;">
+      <div class="modal-header">
+        <h3>Modèle de Réponse Partenaire</h3>
+        <button class="modal-close-btn" data-close-modal="modalQuickReply">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-field">
+          <label>Sélectionnez un modèle</label>
+          <select id="quickReplyTemplateSelect">
+            <option value="rates">💼 Tarifs & Media Kit (Reels / UGC)</option>
+            <option value="availability">📅 Disponibilités Immédiates & Calendrier</option>
+            <option value="brief">📝 Demande de Briefing Créatif</option>
+          </select>
+        </div>
+        <div class="input-field">
+          <label>Texte généré</label>
+          <textarea id="quickReplyPreviewText" rows="6"></textarea>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:10px;">
+          <button id="btnCopyReplyText" class="btn-action-secondary" type="button">
+            <span>📋 Copier le texte</span>
+          </button>
+          <a id="btnSendReplyMailto" class="btn-action-primary" style="width:auto; padding:10px 24px;" href="#" target="_blank">
+            <span>✉️ Ouvrir Messagerie</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MODAL APERÇU MEDIA PLEIN ÉCRAN -->
+  <div id="modalMediaPreview" class="modal-backdrop-custom">
+    <div class="modal-window" style="max-width:640px; background:#000; color:#FFF;">
+      <div class="modal-header" style="background:#111; border-color:#222; color:#FFF;">
+        <h3 id="previewMediaTitle" style="color:#FFF; font-size:1rem;">Aperçu Média</h3>
+        <button class="modal-close-btn" data-close-modal="modalMediaPreview" style="color:#FFF;">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0; display:flex; justify-content:center; background:#000;">
+        <div id="previewMediaSlot" style="width:100%; max-height:70vh; display:flex; align-items:center; justify-content:center;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotification" class="toast-notification">
+    <span style="color:var(--gold-400);">✦</span>
+    <span id="toastMessageText">Action réalisée avec succès</span>
+  </div>
+
+  <!-- =========================================================
+       LOGIQUE JAVASCRIPT DU STUDIO PRO
+       ========================================================= -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const SESSION_KEY = "khadija_admin_session_v2";
+
+    let cachedContents = [];
+    let cachedGallery = [];
+    let cachedCollabs = [];
+    let cachedPacks = [];
+    let cachedMessages = [];
+
+    function escapeHtml(str){
+      const d = document.createElement('div');
+      d.textContent = str || "";
+      return d.innerHTML;
+    }
+
+    /* ---------- TOAST FLOTTANT ---------- */
+    let toastTimeout = null;
+    function notify(message){
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessageText');
+      text.textContent = message;
+      toast.classList.add('active');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove('active'), 3200);
+    }
+
+    /* ---------- GESTION DES MODALES ---------- */
+    function openModal(id){
+      const m = document.getElementById(id);
+      if(m) m.classList.add('open');
+    }
+    function closeModal(id){
+      const m = document.getElementById(id);
+      if(m) m.classList.remove('open');
+    }
+
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+      btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
+    });
+
+    document.querySelectorAll('.modal-backdrop-custom').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) modal.classList.remove('open');
+      });
+    });
+
+    /* ---------- STATUT SUPABASE ---------- */
+    function syncSupabaseStatus(){
+      const badge = document.getElementById('liveStatusBadge');
+      const label = document.getElementById('liveStatusLabel');
+      if(!badge || !label) return;
+
+      badge.className = "status-pill online";
+      label.textContent = "LocalStorage Mode 🟢";
+    }
+
+    /* ---------- AUTHENTIFICATION & SESSIONS ---------- */
+    function checkSession(){
+      const isAuth = sessionStorage.getItem(SESSION_KEY) === "1";
+      const authScreen = document.getElementById('authScreen');
+      const dashboardApp = document.getElementById('dashboardApp');
+
+      if(isAuth){
+        authScreen.style.display = "none";
+        dashboardApp.style.display = "flex";
+        loadDashboardData();
+      }else{
+        authScreen.style.display = "flex";
+        dashboardApp.style.display = "none";
+      }
+      syncSupabaseStatus();
+    }
+
+    document.getElementById('authForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pwd = document.getElementById('adminPassword').value;
+      const err = document.getElementById('authErrorMsg');
+
+      if(window.dataService.verifyPassword(pwd)){
+        sessionStorage.setItem(SESSION_KEY, "1");
+        err.textContent = "";
+        checkSession();
+        notify("Bienvenue dans votre Studio Khadija ✦");
+      }else{
+        err.textContent = "Clé d'accès incorrecte. Veuillez réessayer.";
+      }
+    });
+
+    document.getElementById('togglePasswordBtn').addEventListener('click', () => {
+      const input = document.getElementById('adminPassword');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      checkSession();
+      notify("Session fermée");
+    });
+
+    document.getElementById('btnSidebarEditSite')?.addEventListener('click', () => {
+      const settingsTabBtn = document.querySelector('.nav-item[data-tab="settings"]');
+      if(settingsTabBtn) settingsTabBtn.click();
+    });
+
+    /* ---------- NAVIGATION PAR ONGLETS ---------- */
+    const sectionNames = {
+      'contents': 'Vidéos & Reels',
+      'gallery': 'Univers & Galerie',
+      'collabs': 'Collaborations de marque',
+      'packs': 'Packs & Simulateur de Collaboration',
+      'settings': 'Modifier le Site (Éditeur Complet)',
+      'messages': 'Boîte de réception',
+      'supabase': 'Cloud & Sauvegardes'
+    };
+
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.admin-section-pane').forEach(p => p.style.display = 'none');
+        
+        const targetSection = document.getElementById('section-' + target);
+        if(targetSection) targetSection.style.display = 'block';
+
+        const titleEl = document.getElementById('topbarSectionName');
+        if(titleEl) titleEl.textContent = sectionNames[target] || target;
+
+        document.getElementById('adminSidebar').classList.remove('open');
+
+        if(target === 'packs') { renderPacksList(); loadSimulatorConfig(); }
+        if(target === 'messages') renderMessagesList();
+        if(target === 'settings') loadSiteSettings();
+      });
+    });
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('open');
+    });
+
+    /* ---------- DROPZONES D'UPLOAD ---------- */
+    function setupDropzone(dropzoneId, inputId, previewWrapperId, previewMediaId, isVideo = false){
+      const dropzone = document.getElementById(dropzoneId);
+      const input = document.getElementById(inputId);
+      const wrapper = document.getElementById(previewWrapperId);
+      const preview = document.getElementById(previewMediaId);
+      const label = dropzone.querySelector('.dropzone-text');
+
+      ['dragenter', 'dragover'].forEach(name => {
+        dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+      });
+
+      ['dragleave', 'drop'].forEach(name => {
+        dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        if(e.dataTransfer.files.length > 0){
+          input.files = e.dataTransfer.files;
+          handleFile(input.files[0]);
+        }
+      });
+
+      input.addEventListener('change', () => {
+        if(input.files.length > 0) handleFile(input.files[0]);
+      });
+
+      function handleFile(file){
+        if(!file) return;
+        label.textContent = "Fichier sélectionné : " + file.name;
+        const objectUrl = URL.createObjectURL(file);
+        preview.src = objectUrl;
+        wrapper.style.display = 'block';
+        if(isVideo && preview.load) preview.load();
+      }
+    }
+
+    setupDropzone('videoDropzone', 'videoFileInput', 'videoPreviewWrapper', 'videoLocalPreview', true);
+    setupDropzone('galleryDropzone', 'galleryFileInput', 'galleryPreviewWrapper', 'galleryLocalPreview', false);
+    setupDropzone('collabDropzone', 'collabFileInput', 'collabPreviewWrapper', 'collabLocalPreview', false);
+
+    /* ---------- CHARGEMENT INITIAL DASHBOARD ---------- */
+    async function loadDashboardData(){
+      syncSupabaseStatus();
+
+      await Promise.all([
+        renderContentsList(),
+        renderGalleryList(),
+        renderCollabsList(),
+        renderPacksList(),
+        loadSimulatorConfig(),
+        renderMessagesList(),
+        loadSiteSettings()
+      ]);
+    }
+
+    /* ---------- 1. GESTION DES VIDÉOS & REELS ---------- */
+    async function renderContentsList(){
+      const container = document.getElementById('contentsListContainer');
+      const countEl = document.getElementById('countContentsList');
+      const kpiEl = document.getElementById('kpiCountVideos');
+      const searchVal = (document.getElementById('searchContentsInput')?.value || "").toLowerCase();
+      const catVal = document.getElementById('filterContentsCategory')?.value || "all";
+
+      cachedContents = await window.dataService.getContents();
+      kpiEl.textContent = cachedContents.length;
+
+      let filtered = cachedContents.filter(item => {
+        const matchesSearch = !searchVal || (item.caption || "").toLowerCase().includes(searchVal);
+        const matchesCat = catVal === "all" || (item.category || "reels") === catVal;
+        return matchesSearch && matchesCat;
+      });
+
+      countEl.textContent = filtered.length;
+      container.innerHTML = "";
+
+      if(filtered.length === 0){
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:rgba(32,16,24,0.5);">Aucune vidéo trouvée.</div>';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = "item-card-row";
+        const videoSrcWithTime = item.video && !item.video.includes('#t=') ? `${item.video}#t=0.001` : (item.video || '');
+        row.innerHTML = `
+          <div class="item-card-thumb" title="Cliquer pour voir l'aperçu">
+            ${item.video ? `<video src="${videoSrcWithTime}" muted playsinline preload="metadata"></video>` : `🎬`}
+          </div>
+          <div class="item-card-details">
+            <div class="item-card-title">${escapeHtml(item.caption || "@khadija_nd")}</div>
+            <div class="item-card-meta">
+              <span class="item-card-badge">${item.category || "reels"}</span>
+            </div>
+          </div>
+          <div class="item-card-actions">
+            <button class="btn-icon-action btn-move-up" title="Monter" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+            <button class="btn-icon-action btn-move-down" title="Descendre" ${index === filtered.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+            <button class="btn-icon-action btn-edit" title="Modifier">✏️</button>
+            <button class="btn-icon-action btn-icon-delete" title="Supprimer">✕</button>
+          </div>
+        `;
+
+        // Aperçu
+        row.querySelector('.item-card-thumb').addEventListener('click', () => {
+          showMediaPreview("Aperçu Vidéo : " + item.caption, item.video, true);
+        });
+
+        // Monter
+        row.querySelector('.btn-move-up').addEventListener('click', async () => {
+          if(index > 0){
+            const fullIdx = cachedContents.findIndex(c => c.id === item.id);
+            if(fullIdx > 0){
+              const temp = cachedContents[fullIdx];
+              cachedContents[fullIdx] = cachedContents[fullIdx - 1];
+              cachedContents[fullIdx - 1] = temp;
+              await window.dataService.reorderContents(cachedContents.map(c => c.id));
+              await renderContentsList();
+              notify("Ordre mis à jour");
+            }
+          }
+        });
+
+        // Descendre
+        row.querySelector('.btn-move-down').addEventListener('click', async () => {
+          const fullIdx = cachedContents.findIndex(c => c.id === item.id);
+          if(fullIdx < cachedContents.length - 1){
+            const temp = cachedContents[fullIdx];
+            cachedContents[fullIdx] = cachedContents[fullIdx + 1];
+            cachedContents[fullIdx + 1] = temp;
+            await window.dataService.reorderContents(cachedContents.map(c => c.id));
+            await renderContentsList();
+            notify("Ordre mis à jour");
+          }
+        });
+
+        // Modifier
+        row.querySelector('.btn-edit').addEventListener('click', () => {
+          document.getElementById('editContentId').value = item.id;
+          document.getElementById('editContentCaption').value = item.caption || "";
+          document.getElementById('editContentCategory').value = item.category || "reels";
+          document.getElementById('editContentVideoUrl').value = item.video || "";
+          openModal('modalEditContent');
+        });
+
+        // Supprimer
+        row.querySelector('.btn-icon-delete').addEventListener('click', async () => {
+          if(confirm("Supprimer définitivement cette vidéo ?")){
+            row.style.opacity = '0.3';
+            await window.dataService.deleteContent(item.id);
+            await renderContentsList();
+            notify("Vidéo supprimée");
+          }
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    document.getElementById('searchContentsInput')?.addEventListener('input', renderContentsList);
+    document.getElementById('filterContentsCategory')?.addEventListener('change', renderContentsList);
+
+    // Formulaire d'ajout vidéo
+    document.getElementById('formUploadContent').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const caption = document.getElementById('videoCaptionInput').value.trim();
+      const category = document.getElementById('videoCategorySelect').value;
+      const linkType = document.getElementById('videoLinkTypeSelect').value;
+      const urlInput = document.getElementById('videoUrlInput').value.trim();
+      const fileInput = document.getElementById('videoFileInput');
+      const btn = document.getElementById('btnUploadContent');
+
+      if(!caption){
+        notify("Veuillez indiquer une légende pour la vidéo.");
+        return;
+      }
+
+      if(!urlInput && fileInput.files.length === 0){
+        notify("Veuillez choisir une vidéo ou saisir un lien direct.");
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Publication en cours...</span>';
+
+        let videoSrc = urlInput;
+        if(fileInput.files.length > 0 && linkType === 'video'){
+          // Convertir fichier en base64 pour localStorage
+          videoSrc = await window.dataService.fileToBase64(fileInput.files[0]);
+        }
+
+        await window.dataService.addContent(caption || "@khadija_nd", videoSrc, category, linkType);
+        document.getElementById('videoCaptionInput').value = "";
+        document.getElementById('videoFileInput').value = "";
+        document.getElementById('videoUrlInput').value = "";
+        document.getElementById('videoLinkTypeSelect').value = "video";
+        document.getElementById('videoPreviewWrapper').style.display = 'none';
+        document.getElementById('videoDropzoneLabel').textContent = "Glissez une vidéo ici ou cliquez pour choisir";
+
+        await renderContentsList();
+        notify("Vidéo publiée avec succès ✦");
+      } catch(err) {
+        console.error(err);
+        notify("Erreur lors de la publication.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Publier la vidéo ✦</span>';
+      }
+    });
+
+    // Formulaire d'édition vidéo
+    document.getElementById('formEditContent').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editContentId').value;
+      const caption = document.getElementById('editContentCaption').value.trim();
+      const category = document.getElementById('editContentCategory').value;
+      const video = document.getElementById('editContentVideoUrl').value.trim();
+
+      await window.dataService.updateContent(id, { caption, category, video });
+      closeModal('modalEditContent');
+      await renderContentsList();
+      notify("Vidéo mise à jour avec succès ✦");
+    });
+
+    /* ---------- 2. GESTION DE LA GALERIE ---------- */
+    async function renderGalleryList(){
+      const container = document.getElementById('galleryListContainer');
+      const countEl = document.getElementById('countGalleryList');
+      const kpiEl = document.getElementById('kpiCountGallery');
+      const searchVal = (document.getElementById('searchGalleryInput')?.value || "").toLowerCase();
+      const catVal = document.getElementById('filterGalleryCategory')?.value || "all";
+
+      cachedGallery = await window.dataService.getGallery();
+      kpiEl.textContent = cachedGallery.length;
+
+      let filtered = cachedGallery.filter(item => {
+        const matchesSearch = !searchVal || (item.caption || "").toLowerCase().includes(searchVal);
+        const matchesCat = catVal === "all" || (item.category || "mode") === catVal;
+        return matchesSearch && matchesCat;
+      });
+
+      countEl.textContent = filtered.length;
+      container.innerHTML = "";
+
+      if(filtered.length === 0){
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:rgba(32,16,24,0.5);">Aucune photo trouvée.</div>';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = "item-card-row";
+        row.innerHTML = `
+          <div class="item-card-thumb" title="Aperçu grand format">
+            ${item.image ? `<img src="${item.image}" alt="">` : `🖼️`}
+          </div>
+          <div class="item-card-details">
+            <div class="item-card-title">${escapeHtml(item.caption || "Visuel Univers")}</div>
+            <div class="item-card-meta">
+              <span class="item-card-badge">${item.category || "mode"}</span>
+            </div>
+          </div>
+          <div class="item-card-actions">
+            <button class="btn-icon-action btn-move-up" title="Monter" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+            <button class="btn-icon-action btn-move-down" title="Descendre" ${index === filtered.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+            <button class="btn-icon-action btn-edit" title="Modifier">✏️</button>
+            <button class="btn-icon-action btn-icon-delete" title="Supprimer">✕</button>
+          </div>
+        `;
+
+        // Aperçu
+        row.querySelector('.item-card-thumb').addEventListener('click', () => {
+          showMediaPreview("Photo : " + (item.caption || "Univers Khadija"), item.image, false);
+        });
+
+        // Monter
+        row.querySelector('.btn-move-up').addEventListener('click', async () => {
+          const fullIdx = cachedGallery.findIndex(g => g.id === item.id);
+          if(fullIdx > 0){
+            const temp = cachedGallery[fullIdx];
+            cachedGallery[fullIdx] = cachedGallery[fullIdx - 1];
+            cachedGallery[fullIdx - 1] = temp;
+            await window.dataService.reorderGallery(cachedGallery.map(g => g.id));
+            await renderGalleryList();
+            notify("Ordre mis à jour");
+          }
+        });
+
+        // Descendre
+        row.querySelector('.btn-move-down').addEventListener('click', async () => {
+          const fullIdx = cachedGallery.findIndex(g => g.id === item.id);
+          if(fullIdx < cachedGallery.length - 1){
+            const temp = cachedGallery[fullIdx];
+            cachedGallery[fullIdx] = cachedGallery[fullIdx + 1];
+            cachedGallery[fullIdx + 1] = temp;
+            await window.dataService.reorderGallery(cachedGallery.map(g => g.id));
+            await renderGalleryList();
+            notify("Ordre mis à jour");
+          }
+        });
+
+        // Modifier
+        row.querySelector('.btn-edit').addEventListener('click', () => {
+          document.getElementById('editGalleryId').value = item.id;
+          document.getElementById('editGalleryCaption').value = item.caption || "";
+          document.getElementById('editGalleryCategory').value = item.category || "mode";
+          document.getElementById('editGalleryImageUrl').value = item.image || "";
+          openModal('modalEditGallery');
+        });
+
+        // Supprimer
+        row.querySelector('.btn-icon-delete').addEventListener('click', async () => {
+          if(confirm("Supprimer cette photo de la galerie ?")){
+            row.style.opacity = '0.3';
+            await window.dataService.deleteGalleryItem(item.id);
+            await renderGalleryList();
+            notify("Photo supprimée");
+          }
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    document.getElementById('searchGalleryInput')?.addEventListener('input', renderGalleryList);
+    document.getElementById('filterGalleryCategory')?.addEventListener('change', renderGalleryList);
+
+    // Formulaire d'ajout galerie
+    document.getElementById('formUploadGallery').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const caption = document.getElementById('galleryCaptionInput').value.trim();
+      const category = document.getElementById('galleryCategorySelect').value;
+      const fileInput = document.getElementById('galleryFileInput');
+      const urlInput = document.getElementById('galleryUrlInput').value.trim();
+      const btn = document.getElementById('btnUploadGallery');
+
+      if(fileInput.files.length === 0 && !urlInput){
+        notify("Veuillez choisir une photo ou saisir un lien image direct.");
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Téléversement en cours...</span>';
+
+        let imageUrl = urlInput;
+        if(fileInput.files.length > 0){
+          imageUrl = await window.dataService.fileToBase64(fileInput.files[0]);
+        }
+
+        await window.dataService.addGalleryItem(caption || "Univers Khadija_Nd", imageUrl, category);
+
+        document.getElementById('galleryCaptionInput').value = "";
+        document.getElementById('galleryFileInput').value = "";
+        document.getElementById('galleryUrlInput').value = "";
+        document.getElementById('galleryPreviewWrapper').style.display = 'none';
+        document.getElementById('galleryDropzoneLabel').textContent = "Glissez une photo ici ou cliquez pour choisir";
+
+        await renderGalleryList();
+        notify("Photo ajoutée à l'univers ✦");
+      } catch(err) {
+        console.error(err);
+        notify(err.message || "Erreur lors de l'ajout.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Ajouter à l\'univers ✦</span>';
+      }
+    });
+
+    // Formulaire d'édition galerie
+    document.getElementById('formEditGallery').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editGalleryId').value;
+      const caption = document.getElementById('editGalleryCaption').value.trim();
+      const category = document.getElementById('editGalleryCategory').value;
+      const image = document.getElementById('editGalleryImageUrl').value.trim();
+
+      await window.dataService.updateGalleryItem(id, { caption, category, image });
+      closeModal('modalEditGallery');
+      await renderGalleryList();
+      notify("Photo mise à jour avec succès ✦");
+    });
+
+    /* ---------- 3. GESTION DES COLLABORATIONS ---------- */
+    async function renderCollabsList(){
+      const container = document.getElementById('collabsListContainer');
+      const countEl = document.getElementById('countCollabsList');
+      const kpiEl = document.getElementById('kpiCountCollabs');
+      const searchVal = (document.getElementById('searchCollabsInput')?.value || "").toLowerCase();
+
+      cachedCollabs = await window.dataService.getCollabs();
+      kpiEl.textContent = cachedCollabs.length;
+
+      let filtered = cachedCollabs.filter(item => {
+        return !searchVal || (item.name || "").toLowerCase().includes(searchVal);
+      });
+
+      countEl.textContent = filtered.length;
+      container.innerHTML = "";
+
+      if(filtered.length === 0){
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:rgba(32,16,24,0.5);">Aucune collaboration trouvée.</div>';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = "item-card-row";
+        row.innerHTML = `
+          <div class="item-card-thumb" style="background:#FFF;">
+            ${item.logo ? `<img src="${item.logo}" alt="" style="object-fit:contain; padding:4px;">` : `🤝`}
+          </div>
+          <div class="item-card-details">
+            <div class="item-card-title">${escapeHtml(item.name)}</div>
+            <div class="item-card-meta"><span class="item-card-badge">Partenaire</span></div>
+          </div>
+          <div class="item-card-actions">
+            <button class="btn-icon-action btn-move-up" title="Monter" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+            <button class="btn-icon-action btn-move-down" title="Descendre" ${index === filtered.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+            <button class="btn-icon-action btn-edit" title="Modifier">✏️</button>
+            <button class="btn-icon-action btn-icon-delete" title="Supprimer">✕</button>
+          </div>
+        `;
+
+        // Monter
+        row.querySelector('.btn-move-up').addEventListener('click', async () => {
+          const fullIdx = cachedCollabs.findIndex(c => c.id === item.id);
+          if(fullIdx > 0){
+            const temp = cachedCollabs[fullIdx];
+            cachedCollabs[fullIdx] = cachedCollabs[fullIdx - 1];
+            cachedCollabs[fullIdx - 1] = temp;
+            await window.dataService.reorderCollabs(cachedCollabs.map(c => c.id));
+            await renderCollabsList();
+            notify("Ordre mis à jour");
+          }
+        });
+
+        // Descendre
+        row.querySelector('.btn-move-down').addEventListener('click', async () => {
+          const fullIdx = cachedCollabs.findIndex(c => c.id === item.id);
+          if(fullIdx < cachedCollabs.length - 1){
+            const temp = cachedCollabs[fullIdx];
+            cachedCollabs[fullIdx] = cachedCollabs[fullIdx + 1];
+            cachedCollabs[fullIdx + 1] = temp;
+            await window.dataService.reorderCollabs(cachedCollabs.map(c => c.id));
+            await renderCollabsList();
+            notify("Ordre mis à jour");
+          }
+        });
+
+        // Modifier
+        row.querySelector('.btn-edit').addEventListener('click', () => {
+          document.getElementById('editCollabId').value = item.id;
+          document.getElementById('editCollabName').value = item.name || "";
+          document.getElementById('editCollabLogoUrl').value = item.logo || "";
+          openModal('modalEditCollab');
+        });
+
+        // Supprimer
+        row.querySelector('.btn-icon-delete').addEventListener('click', async () => {
+          if(confirm("Supprimer cette marque partenaire ?")){
+            row.style.opacity = '0.3';
+            await window.dataService.deleteCollab(item.id);
+            await renderCollabsList();
+            notify("Marque retirée");
+          }
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    document.getElementById('searchCollabsInput')?.addEventListener('input', renderCollabsList);
+
+    // Formulaire d'ajout collab
+    document.getElementById('formUploadCollab').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('collabNameInput').value.trim();
+      const fileInput = document.getElementById('collabFileInput');
+      const urlInput = document.getElementById('collabLogoUrlInput').value.trim();
+      const btn = document.getElementById('btnUploadCollab');
+
+      if(!name){
+        notify("Veuillez indiquer le nom de la marque.");
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Enregistrement...</span>';
+
+        let logoUrl = urlInput;
+        if(fileInput.files.length > 0){
+          logoUrl = await window.dataService.fileToBase64(fileInput.files[0]);
+        }
+
+        await window.dataService.addCollab(name, logoUrl);
+        document.getElementById('collabNameInput').value = "";
+        document.getElementById('collabFileInput').value = "";
+        document.getElementById('collabLogoUrlInput').value = "";
+        document.getElementById('collabPreviewWrapper').style.display = 'none';
+        document.getElementById('collabDropzoneLabel').textContent = "Glissez le logo ou cliquez pour parcourir";
+
+        await renderCollabsList();
+        notify("Collaboration enregistrée ✦");
+      } catch(err) {
+        console.error(err);
+        notify("Erreur lors de l'enregistrement.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Enregistrer la collaboration ✦</span>';
+      }
+    });
+
+    // Formulaire d'édition collab
+    document.getElementById('formEditCollab').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editCollabId').value;
+      const name = document.getElementById('editCollabName').value.trim();
+      const logo = document.getElementById('editCollabLogoUrl').value.trim();
+
+      await window.dataService.updateCollab(id, { name, logo });
+      closeModal('modalEditCollab');
+      await renderCollabsList();
+      notify("Collaboration mise à jour ✦");
+    });
+
+    /* ---------- 4. GESTION DES PACKS & FORMULES ---------- */
+    async function renderPacksList(){
+      const container = document.getElementById('packsListContainer');
+      const countEl = document.getElementById('countPacksList');
+      if(!container) return;
+
+      cachedPacks = await window.dataService.getPacks();
+      if(countEl) countEl.textContent = cachedPacks.length;
+
+      container.innerHTML = "";
+
+      if(cachedPacks.length === 0){
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:rgba(32,16,24,0.5);">Aucune formule enregistrée.</div>';
+        return;
+      }
+
+      cachedPacks.forEach((pack, index) => {
+        const row = document.createElement('div');
+        row.className = "item-card-row";
+        
+        const featuresPreview = Array.isArray(pack.features) ? pack.features.slice(0, 2).join(' • ') + (pack.features.length > 2 ? '...' : '') : '';
+        const deliverablesBadge = `${pack.reels || 0} Reel(s) • ${pack.stories || 0} Story • ${pack.ugc || 0} UGC${pack.ads ? ' • Ads 30j' : ''}`;
+
+        row.innerHTML = `
+          <div class="item-card-thumb" style="background:var(--rose-gradient); color:#FFF; font-weight:700; font-size:0.95rem;">
+            P${index + 1}
+          </div>
+          <div class="item-card-details">
+            <div class="item-card-title">
+              ${escapeHtml(pack.title)}
+              ${pack.popular ? `<span class="item-card-badge" style="background:var(--gold-100); color:var(--gold-500); margin-left:6px;">${escapeHtml(pack.popularBadge || "★ En Vedette")}</span>` : ""}
+            </div>
+            <div class="item-card-meta">
+              <span class="item-card-badge">${escapeHtml(deliverablesBadge)}</span>
+            </div>
+            <div style="font-size:0.75rem; color:rgba(32,16,24,0.6); margin-top:4px;">
+              ${escapeHtml(featuresPreview)}
+            </div>
+          </div>
+          <div class="item-card-actions">
+            <button class="btn-icon-action btn-move-up" title="Monter" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+            <button class="btn-icon-action btn-move-down" title="Descendre" ${index === cachedPacks.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+            <button class="btn-icon-action btn-edit" title="Modifier">✏️</button>
+            <button class="btn-icon-action btn-icon-delete" title="Supprimer">✕</button>
+          </div>
+        `;
+
+        // Monter
+        row.querySelector('.btn-move-up').addEventListener('click', async () => {
+          if(index > 0){
+            const temp = cachedPacks[index];
+            cachedPacks[index] = cachedPacks[index - 1];
+            cachedPacks[index - 1] = temp;
+            await window.dataService.reorderPacks(cachedPacks.map(p => p.id));
+            await renderPacksList();
+            notify("Ordre des formules mis à jour");
+          }
+        });
+
+        // Descendre
+        row.querySelector('.btn-move-down').addEventListener('click', async () => {
+          if(index < cachedPacks.length - 1){
+            const temp = cachedPacks[index];
+            cachedPacks[index] = cachedPacks[index + 1];
+            cachedPacks[index + 1] = temp;
+            await window.dataService.reorderPacks(cachedPacks.map(p => p.id));
+            await renderPacksList();
+            notify("Ordre des formules mis à jour");
+          }
+        });
+
+        // Modifier
+        row.querySelector('.btn-edit').addEventListener('click', () => {
+          document.getElementById('editPackId').value = pack.id;
+          document.getElementById('editPackTitle').value = pack.title || "";
+          document.getElementById('editPackTagline').value = pack.tagline || "";
+          document.getElementById('editPackReels').value = pack.reels !== undefined ? pack.reels : 1;
+          document.getElementById('editPackStories').value = pack.stories !== undefined ? pack.stories : 2;
+          document.getElementById('editPackUgc').value = pack.ugc !== undefined ? pack.ugc : 0;
+          document.getElementById('editPackAds').value = pack.ads ? "1" : "0";
+          
+          const popCheck = document.getElementById('editPackPopular');
+          popCheck.checked = Boolean(pack.popular);
+          const popBadgeGroup = document.getElementById('editPackPopularBadgeGroup');
+          popBadgeGroup.style.display = popCheck.checked ? 'block' : 'none';
+          document.getElementById('editPackPopularBadge').value = pack.popularBadge || "★ Le Plus Demandé";
+
+          document.getElementById('editPackFeatures').value = Array.isArray(pack.features) ? pack.features.join('\n') : (pack.features || "");
+          document.getElementById('editPackBtnText').value = pack.buttonText || "";
+
+          openModal('modalEditPack');
+        });
+
+        // Supprimer
+        row.querySelector('.btn-icon-delete').addEventListener('click', async () => {
+          if(confirm(`Supprimer définitivement la formule "${pack.title}" ?`)){
+            row.style.opacity = '0.3';
+            await window.dataService.deletePack(pack.id);
+            await renderPacksList();
+            notify("Formule supprimée");
+          }
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    // Toggle badge populaire dans les formulaires
+    document.getElementById('packPopularCheckbox')?.addEventListener('change', (e) => {
+      const group = document.getElementById('packPopularBadgeGroup');
+      if(group) group.style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('editPackPopular')?.addEventListener('change', (e) => {
+      const group = document.getElementById('editPackPopularBadgeGroup');
+      if(group) group.style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    // Formulaire d'ajout de pack
+    document.getElementById('formAddPack')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnAddPackBtn');
+      const title = document.getElementById('packTitleInput').value.trim();
+      const tagline = document.getElementById('packTaglineInput').value.trim();
+      const reels = parseInt(document.getElementById('packReelsCount').value, 10) || 0;
+      const stories = parseInt(document.getElementById('packStoriesCount').value, 10) || 0;
+      const ugc = parseInt(document.getElementById('packUgcCount').value, 10) || 0;
+      const ads = document.getElementById('packAdsSelect').value === "1";
+      const popular = document.getElementById('packPopularCheckbox').checked;
+      const popularBadge = popular ? document.getElementById('packPopularBadgeInput').value.trim() : "";
+      const features = document.getElementById('packFeaturesInput').value;
+      const buttonText = document.getElementById('packBtnTextInput').value.trim();
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Enregistrement...</span>';
+        await window.dataService.addPack({
+          title, tagline, reels, stories, ugc, ads, popular, popularBadge, features, buttonText
+        });
+        document.getElementById('formAddPack').reset();
+        document.getElementById('packPopularBadgeGroup').style.display = 'none';
+        await renderPacksList();
+        notify("Nouvelle formule enregistrée avec succès ✦");
+      } catch(err) {
+        console.error(err);
+        notify("Erreur lors de l'ajout de la formule.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Enregistrer la Formule ✦</span>';
+      }
+    });
+
+    // Formulaire d'édition de pack
+    document.getElementById('formEditPack')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editPackId').value;
+      const title = document.getElementById('editPackTitle').value.trim();
+      const tagline = document.getElementById('editPackTagline').value.trim();
+      const reels = parseInt(document.getElementById('editPackReels').value, 10) || 0;
+      const stories = parseInt(document.getElementById('editPackStories').value, 10) || 0;
+      const ugc = parseInt(document.getElementById('editPackUgc').value, 10) || 0;
+      const ads = document.getElementById('editPackAds').value === "1";
+      const popular = document.getElementById('editPackPopular').checked;
+      const popularBadge = popular ? document.getElementById('editPackPopularBadge').value.trim() : "";
+      const features = document.getElementById('editPackFeatures').value;
+      const buttonText = document.getElementById('editPackBtnText').value.trim();
+
+      await window.dataService.updatePack(id, {
+        title, tagline, reels, stories, ugc, ads, popular, popularBadge, features, buttonText
+      });
+      closeModal('modalEditPack');
+      await renderPacksList();
+      notify("Formule mise à jour ✦");
+    });
+
+    /* ---------- 5. PARAMÈTRES DU SIMULATEUR ---------- */
+    async function loadSimulatorConfig(){
+      const config = await window.dataService.getSimulatorConfig();
+      const reelEl = document.getElementById('simReachReel');
+      const storyEl = document.getElementById('simReachStory');
+      const ugcEl = document.getElementById('simReachUgc');
+      const adsEl = document.getElementById('simAdsMultiplier');
+      const maxReelsEl = document.getElementById('simMaxReels');
+      const maxStoriesEl = document.getElementById('simMaxStories');
+      const maxUgcEl = document.getElementById('simMaxUgc');
+      const engageEl = document.getElementById('simEngagementText');
+      const delayEl = document.getElementById('simDelayText');
+      const baseMinEl = document.getElementById('simBaseMin');
+
+      if(reelEl) reelEl.value = config.reachPerReel || 75000;
+      if(storyEl) storyEl.value = config.reachPerStory || 20000;
+      if(ugcEl) ugcEl.value = config.reachPerUgc || 40000;
+      if(adsEl) adsEl.value = config.adsMultiplier || 1.5;
+      if(maxReelsEl) maxReelsEl.value = config.maxReels || 4;
+      if(maxStoriesEl) maxStoriesEl.value = config.maxStories || 6;
+      if(maxUgcEl) maxUgcEl.value = config.maxUgc || 3;
+      if(engageEl) engageEl.value = config.engagementText || "98% - 100%";
+      if(delayEl) delayEl.value = config.delayText || "5 à 7 Jours";
+      if(baseMinEl) baseMinEl.value = config.baseReachMin || 15000;
+    }
+
+    document.getElementById('formSimulatorConfig')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updatedConfig = {
+        reachPerReel: parseInt(document.getElementById('simReachReel').value, 10) || 75000,
+        reachPerStory: parseInt(document.getElementById('simReachStory').value, 10) || 20000,
+        reachPerUgc: parseInt(document.getElementById('simReachUgc').value, 10) || 40000,
+        adsMultiplier: parseFloat(document.getElementById('simAdsMultiplier').value) || 1.5,
+        maxReels: parseInt(document.getElementById('simMaxReels').value, 10) || 4,
+        maxStories: parseInt(document.getElementById('simMaxStories').value, 10) || 6,
+        maxUgc: parseInt(document.getElementById('simMaxUgc').value, 10) || 3,
+        engagementText: document.getElementById('simEngagementText').value.trim() || "98% - 100%",
+        delayText: document.getElementById('simDelayText').value.trim() || "5 à 7 Jours",
+        baseReachMin: parseInt(document.getElementById('simBaseMin').value, 10) || 15000
+      };
+
+      await window.dataService.saveSimulatorConfig(updatedConfig);
+      notify("Paramètres du simulateur enregistrés avec succès ✦");
+    });
+
+    /* ---------- 6. ÉDITEUR COMPLET DU SITE WEB ---------- */
+    async function loadSiteSettings(){
+      const settings = await window.dataService.getSiteSettings();
+      const setVal = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined) el.value = val; };
+
+      // Hero
+      setVal('settingHeroGreeting', settings.heroGreeting || "Bonjour");
+      setVal('settingHeroName', settings.heroName || "Khadija_Nd");
+      setVal('settingAvailability', settings.availability || "Ouverte aux collaborations 2026");
+      setVal('settingHeroRole1', settings.heroRole1 || "Créatrice de contenu");
+      setVal('settingHeroRole2', settings.heroRole2 || "Influenceuse");
+      setVal('settingHeroRole3', settings.heroRole3 || "Model photo");
+      setVal('settingHeroRole4', settings.heroRole4 || "Maquilleuse");
+      setVal('settingHeroBtn1', settings.heroCtaSimulate || "Simuler un partenariat ✦");
+      setVal('settingHeroBtn2', settings.heroCtaVideos || "Voir les vidéos");
+
+      // À Propos
+      setVal('settingAboutTitle', settings.aboutTitle || "Khadija_Nd");
+      setVal('settingAboutP1', settings.aboutP1 || "Je suis créatrice de contenu et influenceuse, passionnée par le storytelling, l'image et le lien authentique avec une communauté engagée qui me suit au quotidien.");
+      setVal('settingAboutP2', settings.aboutP2 || "J'accompagne les marques dans leur présence en ligne en imaginant des formats qui captent l'attention et racontent une histoire vraie, sans jamais sonner comme une publicité de plus.");
+      setVal('settingAboutH1', settings.aboutH1 || "Formats courts ultra-viraux (Reels, TikTok) et séries longues");
+      setVal('settingAboutH2', settings.aboutH2 || "Collaborations multi-secteurs : mode, beauté, lifestyle");
+      setVal('settingAboutH3', settings.aboutH3 || "Communauté fidèle et réactive sur plusieurs plateformes");
+      setVal('settingAboutH4', settings.aboutH4 || "Direction créative complète : du brief au rendu final HD");
+
+      // Services
+      setVal('settingSrv1Title', settings.srv1Title || "Création de contenu & Reels");
+      setVal('settingSrv1Desc', settings.srv1Desc || "Vidéos, photos et stories pensées pour capter l'attention dès les 3 premières secondes. Inclut scénario, tournage 4K, montage dynamique et étalonnage.");
+      setVal('settingSrv2Title', settings.srv2Title || "Partenariats de marque");
+      setVal('settingSrv2Desc', settings.srv2Desc || "Placements produits natifs, sponsorisations et co-créations respectant l'ADN de votre marque et les attentes de ma communauté.");
+      setVal('settingSrv2Price', settings.srv2Price || "✦ Tarifs sur mesure selon format et droits d'usage");
+      setVal('settingSrv3Title', settings.srv3Title || "UGC pour marques (Ads)");
+      setVal('settingSrv3Desc', settings.srv3Desc || "Contenus bruts ou montés prêts pour vos campagnes Meta / TikTok Ads, livrés aux formats optimisés 9:16 et 4:5.");
+      setVal('settingSrv4Title', settings.srv4Title || "Égérie & Shooting photo");
+      setVal('settingSrv4Desc', settings.srv4Desc || "Model photo pour lookbooks, campagnes digitales et lancements de collections mode ou cosmétiques.");
+      setVal('settingSrv5Title', settings.srv5Title || "Maquillage Professionnel & Beauty Looks");
+      setVal('settingSrv5Desc', settings.srv5Desc || "Prestations Make-Up artist d'exception pour shootings éditoriaux, défilés, tournages clips/vidéos, événements prestigieux et collaborations marques beauté. Maîtrise du teint glow, contouring haute définition et looks sur-mesure.");
+      setVal('settingSrv5Price', settings.srv5Price || "✦ Sur devis & selon format d'événement");
+
+      // KPIs
+      setVal('settingIgFollowers', settings.igFollowers || "68K+");
+      setVal('settingIgNumber', settings.igNumber || 68);
+      setVal('settingTiktokFollowers', settings.tiktokFollowers || "105K+");
+      setVal('settingTiktokNumber', settings.tiktokNumber || 105);
+      setVal('settingEngagement', settings.engagementRate || "100%");
+      setVal('settingCampaigns', settings.campaignsCount || "12+");
+
+      // FAQ
+      setVal('settingFaqQ1', settings.faqQ1 || "Quels sont tes délais habituels de livraison ?");
+      setVal('settingFaqA1', settings.faqA1 || "En général entre 5 et 10 jours ouvrés entre la validation du brief et la livraison finale, selon la complexité du format.");
+      setVal('settingFaqQ2', settings.faqQ2 || "Proposes-tu des droits d'utilisation pour des publicités (Ads) ?");
+      setVal('settingFaqA2', settings.faqA2 || "Oui, des cessions de droits (Spark Ads, Meta Ads 1 à 6 mois) sont disponibles sur devis selon votre plan média.");
+      setVal('settingFaqQ3', settings.faqQ3 || "Comment s'articule la facturation et le contrat ?");
+      setVal('settingFaqA3', settings.faqA3 || "Émission d'un devis et contrat clair, acompte de 50% au lancement puis solde à la livraison/publication.");
+
+      // Contact & Réseaux
+      setVal('settingEmail', settings.contactEmail || "contact@khadija-nd.com");
+      setVal('settingPhone', settings.contactPhone || "");
+      setVal('settingIgHandle', settings.igHandle || "@khadija_nd");
+      setVal('settingTiktokHandle', settings.tiktokHandle || "@khadija_nd");
+      setVal('settingCreatorBio', settings.creatorBio || "Créatrice de contenu, influenceuse et model photo. Donner vie à des récits visuels captivants et authentiques.");
+    }
+
+    document.getElementById('formSiteSettings')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const getVal = (id) => document.getElementById(id)?.value?.trim() || "";
+
+      const updated = {
+        heroGreeting: getVal('settingHeroGreeting'),
+        heroName: getVal('settingHeroName'),
+        availability: getVal('settingAvailability'),
+        heroRole1: getVal('settingHeroRole1'),
+        heroRole2: getVal('settingHeroRole2'),
+        heroRole3: getVal('settingHeroRole3'),
+        heroRole4: getVal('settingHeroRole4'),
+        heroCtaSimulate: getVal('settingHeroBtn1'),
+        heroCtaVideos: getVal('settingHeroBtn2'),
+
+        aboutTitle: getVal('settingAboutTitle'),
+        aboutP1: getVal('settingAboutP1'),
+        aboutP2: getVal('settingAboutP2'),
+        aboutH1: getVal('settingAboutH1'),
+        aboutH2: getVal('settingAboutH2'),
+        aboutH3: getVal('settingAboutH3'),
+        aboutH4: getVal('settingAboutH4'),
+
+        srv1Title: getVal('settingSrv1Title'),
+        srv1Desc: getVal('settingSrv1Desc'),
+        srv2Title: getVal('settingSrv2Title'),
+        srv2Desc: getVal('settingSrv2Desc'),
+        srv2Price: getVal('settingSrv2Price'),
+        srv3Title: getVal('settingSrv3Title'),
+        srv3Desc: getVal('settingSrv3Desc'),
+        srv4Title: getVal('settingSrv4Title'),
+        srv4Desc: getVal('settingSrv4Desc'),
+        srv5Title: getVal('settingSrv5Title'),
+        srv5Desc: getVal('settingSrv5Desc'),
+        srv5Price: getVal('settingSrv5Price'),
+
+        igFollowers: getVal('settingIgFollowers'),
+        igNumber: parseInt(getVal('settingIgNumber'), 10) || 68,
+        tiktokFollowers: getVal('settingTiktokFollowers'),
+        tiktokNumber: parseInt(getVal('settingTiktokNumber'), 10) || 105,
+        engagementRate: getVal('settingEngagement'),
+        campaignsCount: getVal('settingCampaigns'),
+
+        faqQ1: getVal('settingFaqQ1'),
+        faqA1: getVal('settingFaqA1'),
+        faqQ2: getVal('settingFaqQ2'),
+        faqA2: getVal('settingFaqA2'),
+        faqQ3: getVal('settingFaqQ3'),
+        faqA3: getVal('settingFaqA3'),
+
+        contactEmail: getVal('settingEmail'),
+        contactPhone: getVal('settingPhone'),
+        igHandle: getVal('settingIgHandle'),
+        tiktokHandle: getVal('settingTiktokHandle'),
+        creatorBio: getVal('settingCreatorBio')
+      };
+
+      await window.dataService.saveSiteSettings(updated);
+      notify("Toutes les modifications du site ont été enregistrées avec succès ✦");
+    });
+
+    /* ---------- 5. BOÎTE DE RÉCEPTION & MESSAGES ---------- */
+    async function renderMessagesList(){
+      const container = document.getElementById('messagesInboxContainer');
+      const countEl = document.getElementById('countMessagesList');
+      const kpiEl = document.getElementById('kpiCountMessages');
+      const sidebarBadge = document.getElementById('sidebarMsgBadge');
+      const searchVal = (document.getElementById('searchMessagesInput')?.value || "").toLowerCase();
+      const statusVal = document.getElementById('filterMessageStatus')?.value || "all";
+
+      cachedMessages = await window.dataService.getContactMessages();
+      kpiEl.textContent = cachedMessages.length;
+
+      const unreadCount = cachedMessages.filter(m => (m.status || "nouveau") === "nouveau").length;
+      if(unreadCount > 0){
+        sidebarBadge.textContent = unreadCount;
+        sidebarBadge.style.display = 'inline-block';
+      }else{
+        sidebarBadge.style.display = 'none';
+      }
+
+      let filtered = cachedMessages.filter(msg => {
+        const matchesSearch = !searchVal || 
+          (msg.name || "").toLowerCase().includes(searchVal) ||
+          (msg.brand || "").toLowerCase().includes(searchVal) ||
+          (msg.email || "").toLowerCase().includes(searchVal) ||
+          (msg.message || "").toLowerCase().includes(searchVal);
+        const matchesStatus = statusVal === "all" || (msg.status || "nouveau") === statusVal;
+        return matchesSearch && matchesStatus;
+      });
+
+      countEl.textContent = filtered.length;
+      container.innerHTML = "";
+
+      if(filtered.length === 0){
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:rgba(32,16,24,0.5);">Aucun message trouvé.</div>';
+        return;
+      }
+
+      filtered.forEach(msg => {
+        const card = document.createElement('div');
+        card.className = "message-inbox-card";
+        const dateFormatted = msg.created_at ? new Date(msg.created_at).toLocaleDateString('fr-FR', {
+          day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) : "";
+
+        const currentStatus = msg.status || 'nouveau';
+
+        card.innerHTML = `
+          <div class="msg-top-row">
+            <div>
+              <span class="msg-sender-name">${escapeHtml(msg.name)}</span>
+              ${msg.brand ? `<span class="msg-brand-pill">${escapeHtml(msg.brand)}</span>` : ""}
+              <span class="item-card-badge" style="margin-left:6px;">${escapeHtml(msg.projectType || "Partenariat")}</span>
+              <span class="status-tag ${currentStatus}" style="margin-left:6px;">${currentStatus.replace('_', ' ')}</span>
+            </div>
+            <span style="font-size:0.75rem; color:rgba(32,16,24,0.5);">${dateFormatted}</span>
+          </div>
+          <div>
+            <a href="mailto:${escapeHtml(msg.email)}" style="color:var(--rose-600); font-weight:600; font-size:0.88rem;">
+              ✉️ ${escapeHtml(msg.email)}
+            </a>
+          </div>
+          <div class="msg-content-bubble">${escapeHtml(msg.message)}</div>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.78rem; font-weight:600; color:rgba(32,16,24,0.6);">Statut :</span>
+              <select class="filter-select msg-status-selector" style="padding:4px 10px; font-size:0.78rem;">
+                <option value="nouveau" ${currentStatus === 'nouveau' ? 'selected' : ''}>🟡 Nouveau</option>
+                <option value="en_cours" ${currentStatus === 'en_cours' ? 'selected' : ''}>🔵 En cours</option>
+                <option value="traite" ${currentStatus === 'traite' ? 'selected' : ''}>🟢 Traité / Répondu</option>
+                <option value="archive" ${currentStatus === 'archive' ? 'selected' : ''}>⚪ Archivé</option>
+              </select>
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button class="btn-action-secondary btn-quick-reply" type="button">
+                <span>⚡ Modèle de Réponse</span>
+              </button>
+              <a class="btn-action-secondary" href="mailto:${escapeHtml(msg.email)}?subject=Re: Collaboration Khadija_Nd x ${encodeURIComponent(msg.brand || msg.name)}">
+                <span>✉️ Répondre</span>
+              </a>
+              <button class="btn-icon-action btn-icon-delete" type="button" title="Supprimer">✕</button>
+            </div>
+          </div>
+        `;
+
+        // Changement de statut
+        card.querySelector('.msg-status-selector').addEventListener('change', async (e) => {
+          const newSt = e.target.value;
+          await window.dataService.updateContactMessageStatus(msg.id, newSt);
+          await renderMessagesList();
+          notify("Statut du message mis à jour ✦");
+        });
+
+        // Modèle de réponse
+        card.querySelector('.btn-quick-reply').addEventListener('click', () => {
+          openQuickReplyModal(msg);
+        });
+
+        // Suppression
+        card.querySelector('.btn-icon-delete').addEventListener('click', async () => {
+          if(confirm("Supprimer définitivement ce message ?")){
+            card.style.opacity = '0.3';
+            await window.dataService.deleteContactMessage(msg.id);
+            await renderMessagesList();
+            notify("Message supprimé");
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('searchMessagesInput')?.addEventListener('input', renderMessagesList);
+    document.getElementById('filterMessageStatus')?.addEventListener('change', renderMessagesList);
+    document.getElementById('btnRefreshMessages')?.addEventListener('click', async () => {
+      await renderMessagesList();
+      notify("Boîte de réception actualisée");
+    });
+
+    // Export CSV Messages
+    document.getElementById('btnExportMessages')?.addEventListener('click', () => {
+      if(cachedMessages.length === 0){
+        notify("Aucun message à exporter.");
+        return;
+      }
+      const headers = ["ID", "Date", "Nom", "Email", "Marque", "Type de Projet", "Statut", "Message"];
+      const rows = cachedMessages.map(m => [
+        `"${m.id}"`,
+        `"${m.created_at || ''}"`,
+        `"${(m.name || '').replace(/"/g, '""')}"`,
+        `"${(m.email || '').replace(/"/g, '""')}"`,
+        `"${(m.brand || '').replace(/"/g, '""')}"`,
+        `"${(m.projectType || '').replace(/"/g, '""')}"`,
+        `"${m.status || 'nouveau'}"`,
+        `"${(m.message || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = "\uFEFF" + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Khadija_Nd_Demandes_Partenariats_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      notify("Fichier CSV téléchargé avec succès !");
+    });
+
+    /* ---------- MODÈLES DE RÉPONSE RAPIDE ---------- */
+    let currentReplyTarget = null;
+    const REPLY_TEMPLATES = {
+      rates: (name, brand) => `Bonjour ${name || 'Cher Partenaire'},\n\nMerci pour votre intérêt pour mon univers et mon travail d'influence et de création de contenu.\n\nJe serais ravie de collaborer avec ${brand || 'votre marque'}. Vous trouverez ci-joint mon Media Kit complet détaillant mon audience (68K+ IG, 105K+ TikTok, 100% engagement) ainsi que mes formats privilégiés (Reels scénarisés, UGC, Lookbooks Haute Couture).\n\nRestant à votre écoute pour définir ensemble les modalités,\n\nBien chaleureusement,\nKhadija_Nd\ncontact@khadija-nd.com`,
+      availability: (name, brand) => `Bonjour ${name || 'Cher Partenaire'},\n\nMerci beaucoup pour votre proposition de collaboration.\n\nMon planning éditorial est actuellement ouvert pour ce trimestre. Pourriez-vous me préciser les dates clés de votre campagne ainsi que les livrables attendus pour ${brand || 'votre projet'} ?\n\nDans l'attente de votre retour,\n\nKhadija_Nd`,
+      brief: (name, brand) => `Bonjour ${name || 'Cher Partenaire'},\n\nMerci pour votre prise de contact.\n\nLe projet avec ${brand || 'votre marque'} m'intéresse beaucoup ! Pourriez-vous me faire parvenir votre brief créatif complet (moodboard, directives, échéances et droits d'utilisation) afin que je vous propose une formule sur-mesure ?\n\nExcellente journée,\nKhadija_Nd`
+    };
+
+    function openQuickReplyModal(msg){
+      currentReplyTarget = msg;
+      const select = document.getElementById('quickReplyTemplateSelect');
+      const preview = document.getElementById('quickReplyPreviewText');
+      const mailtoBtn = document.getElementById('btnSendReplyMailto');
+
+      function updateTemplate(){
+        const text = REPLY_TEMPLATES[select.value](msg.name, msg.brand);
+        preview.value = text;
+        const subject = encodeURIComponent(`Re: Collaboration Khadija_Nd x ${msg.brand || msg.name}`);
+        const body = encodeURIComponent(text);
+        mailtoBtn.href = `mailto:${msg.email}?subject=${subject}&body=${body}`;
+      }
+
+      select.onchange = updateTemplate;
+      updateTemplate();
+      openModal('modalQuickReply');
+    }
+
+    document.getElementById('btnCopyReplyText')?.addEventListener('click', () => {
+      const text = document.getElementById('quickReplyPreviewText').value;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(() => notify("Texte de réponse copié !"));
+      } else {
+        prompt("Copiez le texte :", text);
+      }
+    });
+
+    /* ---------- APERÇU MEDIA MODAL ---------- */
+    function showMediaPreview(title, url, isVideo){
+      const titleEl = document.getElementById('previewMediaTitle');
+      const slot = document.getElementById('previewMediaSlot');
+      titleEl.textContent = title;
+      slot.innerHTML = "";
+
+      if(isVideo){
+        const vid = document.createElement('video');
+        vid.src = url;
+        vid.controls = true;
+        vid.autoplay = true;
+        vid.style.maxWidth = "100%";
+        vid.style.maxHeight = "65vh";
+        slot.appendChild(vid);
+      } else {
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.maxWidth = "100%";
+        img.style.maxHeight = "65vh";
+        img.style.objectFit = "contain";
+        slot.appendChild(img);
+      }
+      openModal('modalMediaPreview');
+    }
+
+    /* ---------- 6. SÉCURITÉ & CHANGEMENT DE MOT DE PASSE ---------- */
+    document.getElementById('formChangePassword')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const oldPwd = document.getElementById('oldPasswordInput').value;
+      const newPwd = document.getElementById('newPasswordInput').value;
+
+      const res = window.dataService.changePassword(oldPwd, newPwd);
+      if(res.success){
+        document.getElementById('formChangePassword').reset();
+        notify(res.message);
+      }else{
+        notify(res.message || "Erreur lors du changement.");
+      }
+    });
+
+    /* ---------- EXPORT & RESTAURATION JSON COMPLÈTE ---------- */
+    document.getElementById('btnExportFullBackup')?.addEventListener('click', async () => {
+      const backup = await window.dataService.exportAllData();
+      const jsonStr = JSON.stringify(backup, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Khadija_Nd_Studio_Backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      notify("Sauvegarde intégrale téléchargée ✦");
+    });
+
+    document.getElementById('fileRestoreBackup')?.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+
+      if(!confirm("Restaurer cette sauvegarde écrasera les données actuelles. Confirmer ?")) return;
+
+      try {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            await window.dataService.importAllData(data);
+            await loadDashboardData();
+            notify("Sauvegarde restaurée avec succès ✦");
+          } catch(err){
+            notify("Fichier JSON corrompu ou invalide.");
+          }
+        };
+        reader.readAsText(file);
+      } catch(err) {
+        notify("Erreur lors de la lecture du fichier.");
+      }
+    });
+
+    /* ---------- DIAGNOSTIC & CONFIGURATION SUPABASE ---------- */
+    const SQL_SCHEMA_CODE = `-- ====================================================================
+-- SCHEMA SUPABASE POUR KHADIJA_ND
+-- ====================================================================
+CREATE TABLE IF NOT EXISTS public.contents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    caption TEXT NOT NULL DEFAULT '@khadija_nd',
+    category TEXT NOT NULL DEFAULT 'reels',
+    video_url TEXT NOT NULL DEFAULT '',
+    order_index INTEGER DEFAULT 0
+);
+ALTER TABLE public.contents ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'reels';
+ALTER TABLE public.contents ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS public.gallery (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    caption TEXT DEFAULT 'Univers Khadija_Nd',
+    category TEXT NOT NULL DEFAULT 'mode',
+    image_url TEXT NOT NULL DEFAULT '',
+    order_index INTEGER DEFAULT 0
+);
+ALTER TABLE public.gallery ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'mode';
+ALTER TABLE public.gallery ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS public.collabs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    name TEXT NOT NULL,
+    logo_url TEXT DEFAULT '',
+    order_index INTEGER DEFAULT 0
+);
+ALTER TABLE public.collabs ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    brand TEXT DEFAULT '',
+    message TEXT NOT NULL,
+    project_type TEXT DEFAULT 'Placement / Reel',
+    status TEXT DEFAULT 'nouveau'
+);
+ALTER TABLE public.contact_messages ADD COLUMN IF NOT EXISTS project_type TEXT DEFAULT 'Placement / Reel';
+ALTER TABLE public.contact_messages ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'nouveau';
+
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.contents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.collabs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lecture publique des contenus" ON public.contents;
+CREATE POLICY "Lecture publique des contenus" ON public.contents FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Gestion publique des contenus" ON public.contents;
+CREATE POLICY "Gestion publique des contenus" ON public.contents FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Lecture publique de la galerie" ON public.gallery;
+CREATE POLICY "Lecture publique de la galerie" ON public.gallery FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Gestion publique de la galerie" ON public.gallery;
+CREATE POLICY "Gestion publique de la galerie" ON public.gallery FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Lecture publique des collabs" ON public.collabs;
+CREATE POLICY "Lecture publique des collabs" ON public.collabs FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Gestion publique des collabs" ON public.collabs;
+CREATE POLICY "Gestion publique des collabs" ON public.collabs FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Gestion publique des messages" ON public.contact_messages;
+CREATE POLICY "Gestion publique des messages" ON public.contact_messages FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Gestion publique des reglages" ON public.site_settings;
+CREATE POLICY "Gestion publique des reglages" ON public.site_settings FOR ALL USING (true) WITH CHECK (true);
+
+INSERT INTO storage.buckets (id, name, public) VALUES ('media', 'media', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "Acces public aux medias" ON storage.objects;
+CREATE POLICY "Acces public aux medias" ON storage.objects FOR SELECT USING (bucket_id = 'media');
+DROP POLICY IF EXISTS "Upload public de medias" ON storage.objects;
+CREATE POLICY "Upload public de medias" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'media');
+DROP POLICY IF EXISTS "Suppression publique de medias" ON storage.objects;
+CREATE POLICY "Suppression publique de medias" ON storage.objects FOR DELETE USING (bucket_id = 'media');`;
+
+    document.getElementById('btnCopySqlSchema')?.addEventListener('click', () => {
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(SQL_SCHEMA_CODE).then(() => {
+          notify("Script SQL copié dans le presse-papier !");
+        });
+      } else {
+        prompt("Copiez le script SQL :", SQL_SCHEMA_CODE);
+      }
+    });
+
+    // Configuration Supabase supprimée - LocalStorage uniquement
+
+    // Démarrage initial
+    checkSession();
+    });
+  </script>
+</body>
+</html>

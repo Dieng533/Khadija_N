@@ -1,0 +1,46 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    },
+    {
+      "source": "/Images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "/Images/:path*"
+    },
+    {
+      "source": "/Images/Photo1.jpeg",
+      "destination": "/Images/photo1.jpeg"
+    },
+    {
+      "source": "/Images/Photo2.jpeg",
+      "destination": "/Images/photo2.jpeg"
+    },
+    {
+      "source": "/Images/Photo1.jpg",
+      "destination": "/Images/photo1.jpeg"
+    },
+    {
+      "source": "/Images/Photo2.jpg",
+      "destination": "/Images/photo2.jpeg"
+    }
+  ]
+}
